@@ -55,6 +55,8 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^13.4.2",
+    "@types/cookie": "^0.5.1",
     "@types/eslint": "^8.21.3",
     "@types/node": "^18.15.5",
     "@types/react": "^18.0.28",

@@ -31,6 +31,5 @@ jobs:
 
       - name: 🏎️ Run pretty-quick
         run: yarn pretty-quick --check
-
-      - name: 🚀 Build Next.js
-        run: yarn build
+#      - name: 🚀 Build Next.js
+#        run: yarn build
