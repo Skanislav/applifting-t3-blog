@@ -1,9 +1,11 @@
 name: 🚀 Feature PR and Main Checks
 
 on:
+  push:
+    branches:
+      - "main"
   pull_request:
     branches:
-      - "feature/*"
       - "main"
 
 jobs:
