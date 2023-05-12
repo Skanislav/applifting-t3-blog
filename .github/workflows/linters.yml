@@ -24,10 +24,13 @@ jobs:
         run: yarn install --frozen-lockfile --silent
 
       - name: 🧹 Run ESLint
-        run: yarn eslint . --max-warnings=0
+        run: yarn lint
 
       - name: 🖌️ Run Prettier
         run: yarn prettier --check .
 
       - name: 🏎️ Run pretty-quick
         run: yarn pretty-quick --check
+
+      - name: 🚀 Build Next.js
+        run: yarn build
