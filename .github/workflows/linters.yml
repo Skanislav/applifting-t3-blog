@@ -1,35 +1,35 @@
-name: Feature PR Checks
+name: 🚀 Feature PR and Main Checks
 
 on:
-  push:
-    branches:
-      - "main"
   pull_request:
     branches:
+      - "feature/*"
       - "main"
 
 jobs:
   pr_checks:
-    name: PR Checks
+    name: ✅ PR Checks
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      - name: ⚙️ Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: 16
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
+      - name: 📦 Install dependencies
+        run: yarn install --frozen-lockfile --silent
 
-      - name: Run ESLint
-        run: yarn eslint .
+      - name: 🧹 Run ESLint
+        run: yarn lint
 
-      - name: Run Prettier
+      - name: 🖌️ Run Prettier
         run: yarn prettier --check .
 
-      - name: Run pretty-quick
+      - name: 🏎️ Run pretty-quick
         run: yarn pretty-quick --check
+#      - name: 🚀 Build Next.js
+#        run: yarn build

@@ -1,10 +1,10 @@
-import { type NextApiRequest, type NextApiResponse } from 'next';
+import { type NextApiRequest, type NextApiResponse } from "next";
 
-import { openApiDocument } from '~/server/openapi';
+import { openApiDocument } from "~/server/openapi";
 
 // Respond with our OpenAPI schema
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
-    res.status(200).send(openApiDocument);
+  res.status(200).send(openApiDocument);
 };
 
 export default handler;

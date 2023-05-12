@@ -1,4 +1,6 @@
 # Ignore artifacts:
-node_modules
+node_modules/
 prisma/migrations
 values
+.next
+assets
