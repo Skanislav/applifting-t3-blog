@@ -13,7 +13,7 @@ export default function Layout({children}: React.PropsWithChildren) {
     return <AppShell
         padding="md"
         header={<Header bg={'#F8F9FA'} height={56}>
-            <Container>
+            <Container size={'xl'}>
                 <SimpleGrid h={56} cols={2}>
                     <Group align={'center'} >
                         <Image src={logo} alt={'logo'}/>

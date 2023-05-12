@@ -10,7 +10,7 @@ import superjson from "superjson";
 import {createContext} from "~/server/context";
 
 export async function getServerSideProps(
-    context: GetServerSidePropsContext<{ id: string }>,
+    context: GetServerSidePropsContext,
 ) {
     const helpers = createServerSideHelpers({
         router: appRouter,
