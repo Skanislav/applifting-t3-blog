@@ -1,0 +1,22 @@
+version: '3'
+services:
+  create-t3-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+
+  postgres:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: TEST_USER
+      POSTGRES_PASSWORD: honeypot
+      POSTGRES_DB: blog
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./values:/var/lib/postgresql/data
