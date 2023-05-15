@@ -1,4 +1,5 @@
 import { Button, Divider, FileInput, Group, Stack } from "@mantine/core";
+import Image from "next/image";
 import React, { useRef } from "react";
 
 type DashboardArticleFileInputProps = {
@@ -61,10 +62,9 @@ export function DashboardArticleFileInput({
         onChange={handleFileChange}
         accept="image/png,image/jpeg"
       />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       {value && (
         <>
-          <img width={150} height={100} src={value} alt="preview" />
+          <Image width={150} height={100} src={value} alt="preview" />
 
           <Group>
             <Button onClick={handleUploadNew}>Upload new</Button>

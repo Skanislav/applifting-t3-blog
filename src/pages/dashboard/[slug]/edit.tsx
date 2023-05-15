@@ -54,16 +54,6 @@ export default function Edit({
     content,
     title,
   }: RouterInputs["article"]["createNewArticle"]): void {
-    if (!image || !content?.length || !title) {
-      notifications.show({
-        title: "Error",
-        message: "Please fill all fields",
-        variant: "error",
-      });
-
-      return;
-    }
-
     editArticle.mutate({ slug, title, content, image });
     return;
   }
@@ -81,7 +71,7 @@ export default function Edit({
           )}
 
           <Button disabled={editArticle.isLoading} type={"submit"}>
-            Create
+            Edit
           </Button>
         </ArticleForm>
       </Container>

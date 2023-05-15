@@ -42,7 +42,6 @@ class PrismaArticlesRepository implements ArticlesRepository {
   }
 
   async getArticles(): Promise<Article[]> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
     const articles = await prisma.article.findMany({
       orderBy: {
         createdAt: "desc",
@@ -50,7 +49,7 @@ class PrismaArticlesRepository implements ArticlesRepository {
     });
 
     if (articles?.length) {
-      return Promise.resolve(articles as Article[]);
+      return Promise.resolve(articles);
     }
 
     return [];
@@ -64,7 +63,7 @@ class PrismaArticlesRepository implements ArticlesRepository {
     });
 
     if (article) {
-      return Promise.resolve(article as Article);
+      return Promise.resolve(article);
     }
 
     return Promise.reject(new Error("Article not found"));
