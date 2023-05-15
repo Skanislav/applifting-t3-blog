@@ -1,4 +1,8 @@
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { articlesRepository } from "~/server/repository/prisma-repository";
 import { z } from "zod";
 import { type Article } from "@prisma/client";
@@ -30,6 +34,35 @@ export const articleRouter = createTRPCRouter({
     )
     .query((): Promise<Article[]> => {
       return articlesRepository.getArticles();
+    }),
+
+  createNewArticle: protectedProcedure
+    .meta({
+      openapi: {
+        method: "POST",
+        path: "/articles",
+        tags: ["articles"],
+        summary: "Create new article",
+        protect: true,
+      },
+    })
+    .input(
+      z.object({
+        title: z.string(),
+        content: z.string(),
+        image: z.string(),
+      })
+    )
+    .output(z.object({}))
+    .mutation(async ({ ctx, input }) => {
+      const { title, content, image } = input;
+
+      return articlesRepository.createArticle(
+        title,
+        content,
+        image,
+        ctx.user.id
+      );
     }),
 
   getBySlug: publicProcedure

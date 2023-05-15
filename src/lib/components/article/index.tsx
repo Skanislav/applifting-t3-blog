@@ -6,20 +6,21 @@ import {
   Space,
   Stack,
   Text,
+  TypographyStylesProvider,
   UnstyledButton,
 } from "@mantine/core";
 import { type Article } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
+import { formatDate } from "~/lib/format";
 
 type ArticlePreviewProps = {
-  article: Article;
-} & React.PropsWithChildren;
+  article: Omit<Article, "content">;
+};
 
-function formatDate(date: Date) {
-  return date.toLocaleString("en-GB", { timeZone: "UTC" }).split(",")[0];
+function isHtml(input: string) {
+  return /<[a-z]+\d?(\s+[\w-]+=("[^"]*"|'[^']*'))*\s*\/?>|&#?\w+;/i.test(input);
 }
-
 export const ArticlePreview = ({ article }: ArticlePreviewProps) => {
   return (
     <Flex gap={24}>
@@ -38,9 +39,23 @@ export const ArticlePreview = ({ article }: ArticlePreviewProps) => {
         <Text size={14} color={"#6C757D"} weight={400}>
           {article?.author_name} {formatDate(article?.createdAt)}
         </Text>
-        <Text size={16} weight={400} color={"dark"}>
-          {article?.perex}
-        </Text>
+        {isHtml(article?.perex) ? (
+          <TypographyStylesProvider>
+            <div
+              style={{
+                fontWeight: 400,
+                fontSize: 16,
+                color: "dark",
+                fontFamily: "inherit",
+              }}
+              dangerouslySetInnerHTML={{ __html: article.perex }}
+            />
+          </TypographyStylesProvider>
+        ) : (
+          <Text size={16} weight={400} color={"dark"}>
+            {article?.perex}
+          </Text>
+        )}
         <Space h={"m"} />
         <Group>
           <Box ml={5}>

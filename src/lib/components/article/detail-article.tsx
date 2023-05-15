@@ -8,10 +8,7 @@ import {
   Divider,
 } from "@mantine/core";
 import React from "react";
-
-function formatDate(date: Date) {
-  return date.toLocaleString("en-GB", { timeZone: "UTC" }).split(",")[0];
-}
+import { formatDate } from "~/lib/format";
 
 export const DetailArticle = ({
   article,

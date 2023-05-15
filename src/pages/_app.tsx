@@ -10,13 +10,9 @@ import Head from "next/head";
 import { MantineProvider } from "@mantine/core";
 import Layout from "~/lib/components/layout";
 import { Notifications } from "@mantine/notifications";
-import { type InferGetServerSidePropsType } from "next";
-import { type getServerSideProps } from "~/pages/index";
 
 const MyApp: AppType<{
-  session:
-    | Session
-    | (null & InferGetServerSidePropsType<typeof getServerSideProps>);
+  session: Session;
 }> = ({ Component, pageProps: { session, ...pageProps } }) => {
   return (
     <>
