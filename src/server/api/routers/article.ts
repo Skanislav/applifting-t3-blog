@@ -80,13 +80,78 @@ export const articleRouter = createTRPCRouter({
     .output(z.object({}))
     .mutation(async ({ ctx, input }) => {
       const { title, content, image } = input;
+      const {
+        user: { name: username },
+      } = ctx;
 
-      return articlesRepository.createArticle(
-        title,
+      return articlesRepository.createArticle(title, content, image, username);
+    }),
+
+  editArticle: protectedProcedure
+    .meta({
+      openapi: {
+        method: "PUT",
+        path: "/articles/:slug",
+        tags: ["articles"],
+        summary: "Edit article",
+        protect: true,
+      },
+    })
+    .input(
+      z.object({
+        title: z.string(),
+        content: z.string(),
+        image: z.string(),
+        slug: z.string(),
+      })
+    )
+    .output(z.object({}))
+    .mutation(async ({ input }) => {
+      const { title, content, image, slug } = input;
+      const article = await articlesRepository.getBySlug(slug);
+
+      // We could use something like this in the future
+      // if (article.author_id !== ctx.user.id) {
+      //
+      // }
+
+      if (!article) {
+        throw new Error("Article not found");
+      }
+
+      return articlesRepository.editArticle({
+        ...article,
         content,
-        image,
-        ctx.user.id
-      );
+        title,
+        image_url: image,
+      });
+    }),
+
+  deleteArticle: protectedProcedure
+    .meta({
+      openapi: {
+        method: "DELETE",
+        path: "/articles/:slug",
+        tags: ["articles"],
+        summary: "Delete article",
+        protect: true,
+      },
+    })
+    .input(
+      z.object({
+        slug: z.string(),
+      })
+    )
+    .output(z.void())
+    .mutation(async ({ input }) => {
+      const { slug } = input;
+      const isDeleted = await articlesRepository.deleteArticle(slug);
+
+      if (!isDeleted) {
+        throw new Error("Article not found");
+      }
+
+      return;
     }),
 
   getBySlug: publicProcedure

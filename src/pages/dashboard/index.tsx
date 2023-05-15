@@ -4,6 +4,7 @@ import { ActionIcon, Container, Group, Table } from "@mantine/core";
 import { IconPencil, IconTrash } from "@tabler/icons-react";
 import { type GetServerSidePropsContext } from "next";
 import { getServerAuthSession } from "~/server/auth";
+import Link from "next/link";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerAuthSession(context);
@@ -37,9 +38,12 @@ export default function DashboardPage() {
     </tr>
   );
 
-  function deleteWithConfirm() {
-    // to implement
-    void 0;
+  const deleteArticle = api.article.deleteArticle.useMutation();
+
+  function deleteWithConfirm(slug: string) {
+    const res = confirm("Are you sure you want to delete this article?");
+    if (!res) return;
+    deleteArticle.mutate({ slug });
   }
 
   return (
@@ -60,10 +64,12 @@ export default function DashboardPage() {
                   <td></td>
                   <td>
                     <Group noWrap>
-                      <ActionIcon onClick={deleteWithConfirm}>
+                      <Link href={`/dashboard/${article.slug}/edit`}>
                         <IconPencil size="1.125rem" />
-                      </ActionIcon>
-                      <ActionIcon onClick={deleteWithConfirm}>
+                      </Link>
+                      <ActionIcon
+                        onClick={() => deleteWithConfirm(article.slug)}
+                      >
                         <IconTrash color={"red"} size="1.125rem" />
                       </ActionIcon>
                     </Group>
