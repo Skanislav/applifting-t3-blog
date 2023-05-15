@@ -1,13 +1,5 @@
 import { api } from "~/utils/api";
-import {
-  Container,
-  Divider,
-  Grid,
-  Group,
-  Space,
-  Stack,
-  Title,
-} from "@mantine/core";
+import { Container, Divider, Grid, Group, Space, Stack } from "@mantine/core";
 import React from "react";
 import { DetailArticle } from "~/lib/components/article/detail-article";
 import {
@@ -18,6 +10,7 @@ import { appRouter } from "~/server/api/root";
 import { createContext } from "~/server/context";
 import superjson from "superjson";
 import { createServerSideHelpers } from "@trpc/react-query/server";
+import { RelatedArticles } from "~/lib/components/related-articles";
 
 export async function getServerSideProps(
   context: GetServerSidePropsContext<{ slug: string }>
@@ -62,9 +55,7 @@ export default function ArticleDetailPage({
             <Group>
               <Divider mah={590} orientation="vertical" />
               <Stack w={346} ml={"auto"}>
-                <Title order={3} size={24} weight={500}>
-                  Related articles
-                </Title>
+                <RelatedArticles articleSlug={slug} />
               </Stack>
             </Group>
           </Grid.Col>
