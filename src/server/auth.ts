@@ -14,7 +14,7 @@ declare module "next-auth" {
       id: string;
       // ...other properties
       name: string;
-    } & DefaultSession["user"];
+    } & Omit<DefaultSession["user"], "image">;
   }
 }
 
@@ -37,6 +37,8 @@ export const authOptions: NextAuthOptions = {
     session({ session, token }) {
       if (token.sub) {
         session.user.id = token.sub;
+        // Here we remove the image from the session because we don't need it
+        session.user.image = null;
       }
       return session;
     },
@@ -54,7 +56,7 @@ export const authOptions: NextAuthOptions = {
             where: { name: credentials?.username },
           });
           if (user && user.password === credentials?.password) {
-            return { id: user.id, name: user.name };
+            return { id: user.id, name: user.name, email: user.email };
           } else {
             return null;
           }

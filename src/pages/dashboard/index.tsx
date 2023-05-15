@@ -2,6 +2,27 @@ import { api } from "~/utils/api";
 import React from "react";
 import { ActionIcon, Container, Group, Table } from "@mantine/core";
 import { IconPencil, IconTrash } from "@tabler/icons-react";
+import { type GetServerSidePropsContext } from "next";
+import { getServerAuthSession } from "~/server/auth";
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const session = await getServerAuthSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      session,
+    },
+  };
+}
 
 export default function DashboardPage() {
   const { data: articles, status } = api.article.getAll.useQuery();
@@ -36,7 +57,7 @@ export default function DashboardPage() {
                   <td>{article.title}</td>
                   <td>{article.perex}</td>
                   <td>{article.author_name}</td>
-                  <td> </td>
+                  <td></td>
                   <td>
                     <Group noWrap>
                       <ActionIcon onClick={deleteWithConfirm}>
