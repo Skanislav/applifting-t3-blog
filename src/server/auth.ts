@@ -1,4 +1,3 @@
-import { type GetServerSidePropsContext } from "next";
 import {
   getServerSession,
   type NextAuthOptions,
@@ -7,6 +6,7 @@ import {
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "~/server/db";
+import { type CreateNextContextOptions } from "@trpc/server/src/adapters/next";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -23,6 +23,24 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   adapter: PrismaAdapter(prisma),
+  callbacks: {
+    jwt({ token, user, account }) {
+      if (account) {
+        token.accessToken = account.access_token;
+      }
+
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    session({ session, token }) {
+      if (token.sub) {
+        session.user.id = token.sub;
+      }
+      return session;
+    },
+  },
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -47,23 +65,8 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  callbacks: {
-    jwt({ token, user, account }) {
-      if (account) {
-        token.accessToken = account.access_token;
-      }
-
-      if (user) {
-        token.id = user.id;
-      }
-      return token;
-    },
-  },
 };
 
-export const getServerAuthSession = (ctx: {
-  req: GetServerSidePropsContext["req"];
-  res: GetServerSidePropsContext["res"];
-}) => {
+export const getServerAuthSession = (ctx: CreateNextContextOptions) => {
   return getServerSession(ctx.req, ctx.res, authOptions);
 };

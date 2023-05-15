@@ -1,6 +1,10 @@
-import { type GetServerSidePropsContext } from "next";
 import { type Session } from "next-auth";
 import { prisma } from "~/server/db";
+import type * as trpc from "@trpc/server";
+import { getSession } from "next-auth/react";
+import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import { getToken } from "next-auth/jwt";
+import { type GetServerSidePropsContext } from "next";
 
 type CreateContextOptions = {
   session: Session | null;
@@ -13,24 +17,20 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
   };
 };
 
-import type * as trpc from "@trpc/server";
-import type * as trpcNext from "@trpc/server/adapters/next";
-import { type NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http";
-import { type IncomingMessage } from "http";
-import { getSession } from "next-auth/react";
-import type ws from "ws";
-
 export const createContext = async (
-  opts:
-    | trpcNext.CreateNextContextOptions
-    | NodeHTTPCreateContextFnOptions<IncomingMessage, ws>
-    | GetServerSidePropsContext
+  opts: GetServerSidePropsContext | CreateNextContextOptions
 ) => {
-  const session = await getSession(opts);
+  const session = await getSession({ req: opts.req });
+  const token = await getToken(opts);
 
-  return createInnerTRPCContext({
+  const ctx = createInnerTRPCContext({
     session,
   });
+
+  return {
+    ...ctx,
+    user: token,
+  };
 };
 
 export type Context = trpc.inferAsyncReturnType<typeof createContext>;

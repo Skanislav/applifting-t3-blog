@@ -28,7 +28,7 @@ export const api = createTRPCNext<AppRouter>({
       ],
     };
   },
-  ssr: true,
+  ssr: false,
 });
 
 /**

@@ -5,17 +5,25 @@ import {
   Group,
   Header,
   SimpleGrid,
+  Avatar,
+  Popover,
+  Button,
 } from "@mantine/core";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import logo from "public/logo.jpg";
 import Link from "next/link";
 import { SignInModal } from "~/lib/components/sign-in";
-import { useSession } from "next-auth/react";
+import { signOut as nextAuthSignOut, useSession } from "next-auth/react";
 
 export default function Layout({ children }: React.PropsWithChildren) {
   const session = useSession();
   const isAuthenticated = session.status === "authenticated";
+  const [opened, setOpened] = useState(false);
+
+  async function signOut() {
+    await nextAuthSignOut();
+  }
 
   return (
     <AppShell
@@ -38,7 +46,42 @@ export default function Layout({ children }: React.PropsWithChildren) {
               </Group>
               <Group align={"center"} ml={"auto"}>
                 {!isAuthenticated && <SignInModal />}
-                <Text>{session.data?.user?.name}</Text>
+                {isAuthenticated && (
+                  <>
+                    <Text
+                      component={Link}
+                      href={"/dashboard"}
+                      color={"#6C757D"}
+                    >
+                      My Articles
+                    </Text>
+
+                    <Text
+                      component={Link}
+                      href={"/dashboard/create-article"}
+                      color={"#007BFF"}
+                    >
+                      Create Article
+                    </Text>
+
+                    <Popover opened={opened} onChange={setOpened}>
+                      <Popover.Target>
+                        <Avatar
+                          onClick={() => setOpened((o) => !o)}
+                          color="pink"
+                          radius="xl"
+                        >
+                          U
+                        </Avatar>
+                      </Popover.Target>
+
+                      <Popover.Dropdown>
+                        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+                        <Button onClick={signOut}>Sign out</Button>
+                      </Popover.Dropdown>
+                    </Popover>
+                  </>
+                )}
               </Group>
             </SimpleGrid>
           </Container>
