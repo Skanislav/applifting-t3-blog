@@ -10,6 +10,7 @@ export interface ArticlesRepository {
     image: string,
     user_id: string
   ) => Promise<Article>;
+  getRelatedArticles: (article: Article) => Promise<Article[]>;
 }
 
 class PrismaArticlesRepository implements ArticlesRepository {
@@ -65,6 +66,19 @@ class PrismaArticlesRepository implements ArticlesRepository {
     }
 
     return Promise.reject(new Error("Article not created"));
+  }
+
+  async getRelatedArticles(article: Article): Promise<Article[]> {
+    const articles = await prisma.article.findMany({
+      where: {
+        author_name: article.author_name,
+      },
+    });
+    if (articles?.length) {
+      return Promise.resolve(articles);
+    }
+
+    return Promise.resolve([]);
   }
 }
 

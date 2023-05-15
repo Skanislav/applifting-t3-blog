@@ -17,7 +17,7 @@ export const articleRouter = createTRPCRouter({
         summary: "List recent articles ordered by descending date",
       },
     })
-    .input(z.undefined())
+    .input(z.void())
     .output(
       z
         .object({
@@ -34,6 +34,30 @@ export const articleRouter = createTRPCRouter({
     )
     .query((): Promise<Article[]> => {
       return articlesRepository.getArticles();
+    }),
+
+  getRelatedArticles: publicProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/articles/:slug/related",
+        tags: ["articles"],
+        summary: "List recent articles ordered by descending date",
+      },
+    })
+    .input(z.string().describe("Article slug"))
+    .output(
+      z
+        .object({
+          title: z.string(),
+          perex: z.string(),
+          slug: z.string(),
+        })
+        .array()
+    )
+    .query(async ({ input }): Promise<Article[]> => {
+      const article = await articlesRepository.getBySlug(input);
+      return articlesRepository.getRelatedArticles(article);
     }),
 
   createNewArticle: protectedProcedure
