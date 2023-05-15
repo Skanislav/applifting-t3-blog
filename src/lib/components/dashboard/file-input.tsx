@@ -1,11 +1,16 @@
 import { Button, Divider, FileInput, Group, Stack } from "@mantine/core";
-import React, { useMemo, useRef } from "react";
+import Image from "next/image";
+import React, { useRef } from "react";
 
 type DashboardArticleFileInputProps = {
-  value: File | null;
-  onChange: (file: File | null) => void;
+  /**
+   * base64 encoded image
+   */
+  value?: string | null;
+  onChange: (stringEncodedImage: string) => void;
   onUploadNew?: () => void;
   onRemove?: () => void;
+  imageUrl?: string | null;
 };
 
 export function DashboardArticleFileInput({
@@ -13,35 +18,61 @@ export function DashboardArticleFileInput({
   onChange,
 }: DashboardArticleFileInputProps) {
   const resetRef = useRef<HTMLButtonElement | null>(null);
+  const [file, setFile] = React.useState<File | null>(null);
 
   function handleUploadNew() {
-    onChange(null);
+    onChange("");
+    setFile(null);
     resetRef.current?.click();
   }
 
-  const image = useMemo(() => {
-    return value ? URL.createObjectURL(value) : "";
-  }, [value]);
+  const handleFileChange = (file: File) => {
+    if (file) {
+      setFile(file);
+      fileToBase64(file)
+        .then((result) => {
+          if (result) {
+            onChange(result.toString());
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
+
+  const fileToBase64 = (file: File): Promise<string | ArrayBuffer | null> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
 
   return (
     <Stack>
-      {!value && (
-        <FileInput
-          ref={resetRef}
-          placeholder={"Upload image"}
-          value={value}
-          onChange={onChange}
-          accept="image/png,image/jpeg"
-        />
-      )}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      {value && <img width={150} height={100} src={image} alt="preview" />}
+      <FileInput
+        style={{ display: !!value ? "none" : "block" }}
+        ref={resetRef}
+        placeholder={"Upload image"}
+        value={file}
+        onChange={handleFileChange}
+        accept="image/png,image/jpeg"
+      />
+      {value && (
+        <>
+          <Image width={150} height={100} src={value} alt="preview" />
 
-      <Group>
-        <Button onClick={handleUploadNew}>Upload new</Button>
-        <Divider mih={5} />
-        <Button onClick={handleUploadNew}>Delete</Button>
-      </Group>
+          <Group>
+            <Button onClick={handleUploadNew}>Upload new</Button>
+            <Divider mih={5} />
+            <Button onClick={handleUploadNew}>Delete</Button>
+          </Group>
+        </>
+      )}
     </Stack>
   );
 }
