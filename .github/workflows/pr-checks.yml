@@ -22,6 +22,12 @@ jobs:
         with:
           node-version: 16
 
+      - name: 📦 Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
       - name: 📦 Install dependencies
         run: yarn install --frozen-lockfile --silent
 
@@ -47,6 +53,12 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
+
+      - name: 📦 Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
 
       - name: 📦 Install dependencies
         run: yarn install --frozen-lockfile --silent
