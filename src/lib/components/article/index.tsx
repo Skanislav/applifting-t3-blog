@@ -41,7 +41,7 @@ export const ArticlePreview = ({ article }: ArticlePreviewProps) => {
         </Text>
         {isHtml(article?.perex) ? (
           <TypographyStylesProvider>
-            <div
+            <span
               style={{
                 fontWeight: 400,
                 fontSize: 16,
