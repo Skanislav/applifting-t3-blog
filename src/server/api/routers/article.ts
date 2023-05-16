@@ -186,7 +186,7 @@ export const articleRouter = createTRPCRouter({
         summary: "List recent articles ordered by descending date",
       },
     })
-    .input(z.string().describe("Article slug"))
+    .input(z.string())
     .output(
       z
         .object({
