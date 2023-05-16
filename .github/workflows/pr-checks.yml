@@ -33,5 +33,12 @@ jobs:
 
       - name: 🏎️ Run pretty-quick
         run: yarn pretty-quick --check
-#      - name: 🚀 Build Next.js
-#        run: yarn build
+
+  tests:
+    needs: [pr_checks]
+    name: ✅ Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧹 Run Jest tests
+        run: yarn test --ci --listTests
