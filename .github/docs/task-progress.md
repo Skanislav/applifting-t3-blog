@@ -40,10 +40,11 @@ This file tracks the progress of the assignment tasks.
 
 - [ ] Add the possibility to add comments to articles
   - [ ] Implement comment creation
-  - [ ] Implement comment retrieval
+  - [x] Implement comment retrieval
   - [ ] Implement comment updating
   - [ ] Implement comment deletion
-  - [ ] Add author, content, timestamp to comments
+  - [x] Add author, content, timestamp to comments
+  - [x] Seed comments
 
 ### Comment Voting
 
