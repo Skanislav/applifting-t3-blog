@@ -1,5 +1,5 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { type CreateNextContextOptions } from "@trpc/server/src/adapters/next";
+import { type GetServerSidePropsContext } from "next";
 import {
   type DefaultSession,
   getServerSession,
@@ -15,7 +15,7 @@ declare module "next-auth" {
       id: string;
       // ...other properties
       name: string;
-    } & Omit<DefaultSession["user"], "image">;
+    } & DefaultSession["user"];
   }
 }
 
@@ -70,6 +70,6 @@ export const authOptions: NextAuthOptions = {
   ],
 };
 
-export const getServerAuthSession = (ctx: CreateNextContextOptions) => {
+export const getServerAuthSession = (ctx: GetServerSidePropsContext) => {
   return getServerSession(ctx.req, ctx.res, authOptions);
 };
