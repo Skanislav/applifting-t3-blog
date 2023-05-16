@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import superjson from "superjson";
 
-import { ArticleForm } from "~/lib/components/dashboard/article-form";
+import { ArticleForm } from "~/components/dashboard/article-form";
 import { appRouter } from "~/server/api/root";
 import { createContext } from "~/server/context";
 import { api, type RouterInputs } from "~/utils/api";

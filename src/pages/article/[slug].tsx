@@ -15,9 +15,9 @@ import {
 import React from "react";
 import superjson from "superjson";
 
-import { DetailArticle } from "~/lib/components/article/detail-article";
-import { ArticleComments } from "~/lib/components/comments/comments-list";
-import { RelatedArticles } from "~/lib/components/related-articles";
+import { DetailArticle } from "~/components/article/detail-article";
+import { ArticleComments } from "~/components/comments/comments-list";
+import { RelatedArticles } from "~/components/related-articles";
 import { appRouter } from "~/server/api/root";
 import { createContext } from "~/server/context";
 import { api } from "~/utils/api";

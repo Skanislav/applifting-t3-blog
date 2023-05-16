@@ -1,7 +1,7 @@
 import { Stack } from "@mantine/core";
 import React from "react";
 
-import { ArticleCommentComponent } from "~/lib/components/comments/article-comment";
+import { ArticleCommentComponent } from "~/components/comments/article-comment";
 import { type ArticleComment } from "~/lib/models";
 
 type CommentsListProps = {

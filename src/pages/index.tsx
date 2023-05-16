@@ -4,7 +4,7 @@ import { type GetServerSidePropsContext, type NextPage } from "next";
 import React from "react";
 import superjson from "superjson";
 
-import { ArticlePreview } from "~/lib/components/article";
+import { ArticlePreview } from "~/components/article";
 import { appRouter } from "~/server/api/root";
 import { createContext } from "~/server/context";
 import { api } from "~/utils/api";

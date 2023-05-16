@@ -15,7 +15,7 @@ import { signOut as nextAuthSignOut, useSession } from "next-auth/react";
 import logo from "public/logo.jpg";
 import React, { useState } from "react";
 
-import { SignInModal } from "~/lib/components/sign-in";
+import { SignInModal } from "~/components/sign-in";
 
 export default function Layout({ children }: React.PropsWithChildren) {
   const session = useSession();

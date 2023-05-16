@@ -5,8 +5,8 @@ import { useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
 import React, { type PropsWithChildren, useState } from "react";
 
-import { DashboardArticleFileInput } from "~/lib/components/dashboard/file-input";
-import { RichEditor } from "~/pages/dashboard/rich-editor";
+import { DashboardArticleFileInput } from "~/components/dashboard/file-input";
+import { RichEditor } from "~/components/rich-editor";
 import { type RouterInputs } from "~/utils/api";
 
 type ArticleFormProps = {
