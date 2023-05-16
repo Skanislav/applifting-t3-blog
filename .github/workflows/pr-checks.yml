@@ -1,0 +1,67 @@
+name: 🚀 Feature PR and Main Checks
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  pr_checks:
+    name: ✅ PR Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v2
+
+      - name: ⚙️ Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: 📦 Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+      - name: 📦 Install dependencies
+        run: yarn install --frozen-lockfile --silent
+
+      - name: 🧹 Run ESLint
+        run: yarn lint
+
+      - name: 🖌️ Run Prettier
+        run: yarn prettier --check .
+
+      - name: 🏎️ Run pretty-quick
+        run: yarn pretty-quick --check
+
+  tests:
+    needs: pr_checks
+    name: ✅ Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v2
+
+      - name: ⚙️ Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: 📦 Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+
+      - name: 📦 Install dependencies
+        run: yarn install --frozen-lockfile --silent
+
+      - name: 🧹 Run Jest tests
+        run: yarn test -c jest.config.cjs --ci --listTests

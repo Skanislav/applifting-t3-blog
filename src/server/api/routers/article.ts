@@ -8,58 +8,6 @@ import { z } from "zod";
 import { type Article } from "@prisma/client";
 
 export const articleRouter = createTRPCRouter({
-  getAll: publicProcedure
-    .meta({
-      openapi: {
-        method: "GET",
-        path: "/articles",
-        tags: ["articles"],
-        summary: "List recent articles ordered by descending date",
-      },
-    })
-    .input(z.void())
-    .output(
-      z
-        .object({
-          id: z.string(),
-          slug: z.string(),
-          title: z.string(),
-          perex: z.string(),
-          createdAt: z.date(),
-          publishedAt: z.date().nullable(),
-          author_name: z.string(),
-          image_url: z.string().nullable(),
-        })
-        .array()
-    )
-    .query((): Promise<Article[]> => {
-      return articlesRepository.getArticles();
-    }),
-
-  getRelatedArticles: publicProcedure
-    .meta({
-      openapi: {
-        method: "GET",
-        path: "/articles/:slug/related",
-        tags: ["articles"],
-        summary: "List recent articles ordered by descending date",
-      },
-    })
-    .input(z.string().describe("Article slug"))
-    .output(
-      z
-        .object({
-          title: z.string(),
-          perex: z.string(),
-          slug: z.string(),
-        })
-        .array()
-    )
-    .query(async ({ input }): Promise<Article[]> => {
-      const article = await articlesRepository.getBySlug(input);
-      return articlesRepository.getRelatedArticles(article);
-    }),
-
   createNewArticle: protectedProcedure
     .meta({
       openapi: {
@@ -84,47 +32,11 @@ export const articleRouter = createTRPCRouter({
         user: { name: username },
       } = ctx;
 
-      return articlesRepository.createArticle(title, content, image, username);
-    }),
-
-  editArticle: protectedProcedure
-    .meta({
-      openapi: {
-        method: "PUT",
-        path: "/articles/:slug",
-        tags: ["articles"],
-        summary: "Edit article",
-        protect: true,
-      },
-    })
-    .input(
-      z.object({
-        title: z.string(),
-        content: z.string(),
-        image: z.string(),
-        slug: z.string(),
-      })
-    )
-    .output(z.object({}))
-    .mutation(async ({ input }) => {
-      const { title, content, image, slug } = input;
-      const article = await articlesRepository.getBySlug(slug);
-
-      // We could use something like this in the future
-      // if (article.author_id !== ctx.user.id) {
-      //
-      // }
-
-      if (!article) {
-        throw new Error("Article not found");
-      }
-
-      return articlesRepository.editArticle({
-        ...article,
-        content,
-        title,
-        image_url: image,
-      });
+      /**
+       * already handled by zod
+       */
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return articlesRepository.createArticle(title, content, image, username!);
     }),
 
   deleteArticle: protectedProcedure
@@ -152,6 +64,75 @@ export const articleRouter = createTRPCRouter({
       }
 
       return;
+    }),
+
+  editArticle: protectedProcedure
+    .meta({
+      openapi: {
+        method: "PUT",
+        path: "/articles/:slug",
+        tags: ["articles"],
+        summary: "Edit article",
+        protect: true,
+      },
+    })
+    .input(
+      z.object({
+        title: z.string(),
+        content: z.string(),
+        image: z.string(),
+        slug: z.string(),
+      })
+    )
+    .output(z.object({}))
+    .mutation(async ({ input }) => {
+      const { title, content, image, slug } = input;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const article = await articlesRepository.getBySlug(slug);
+
+      // We could use something like this in the future
+      // if (article.author_id !== ctx.user.id) {
+      //
+      // }
+
+      if (!article) {
+        throw new Error("Article not found");
+      }
+
+      return articlesRepository.editArticle({
+        ...article,
+        content,
+        title,
+        image_url: image,
+      });
+    }),
+
+  getAll: publicProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/articles",
+        tags: ["articles"],
+        summary: "List recent articles ordered by descending date",
+      },
+    })
+    .input(z.void())
+    .output(
+      z
+        .object({
+          id: z.string(),
+          slug: z.string(),
+          title: z.string(),
+          perex: z.string(),
+          createdAt: z.date(),
+          publishedAt: z.date().nullable(),
+          author_name: z.string(),
+          image_url: z.string().nullable(),
+        })
+        .array()
+    )
+    .query((): Promise<Article[]> => {
+      return articlesRepository.getArticles();
     }),
 
   getBySlug: publicProcedure
@@ -185,5 +166,30 @@ export const articleRouter = createTRPCRouter({
         input: { slug },
       } = ctx;
       return articlesRepository.getBySlug(slug);
+    }),
+
+  getRelatedArticles: publicProcedure
+    .meta({
+      openapi: {
+        method: "GET",
+        path: "/articles/:slug/related",
+        tags: ["articles"],
+        summary: "List recent articles ordered by descending date",
+      },
+    })
+    .input(z.string().describe("Article slug"))
+    .output(
+      z
+        .object({
+          title: z.string(),
+          perex: z.string(),
+          slug: z.string(),
+        })
+        .array()
+    )
+    .query(async ({ input }): Promise<Article[]> => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const article = await articlesRepository.getBySlug(input);
+      return articlesRepository.getRelatedArticles(article);
     }),
 });
