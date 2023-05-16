@@ -19,12 +19,14 @@
     "db-seed": "NODE_ENV=development prisma db seed",
     "migrate": "prisma migrate dev ",
     "prepare": "husky install",
-    "test": "jest -c jest.tsc.config.cjs"
+    "test": "jest"
   },
   "jest-runner-tsc": {
     "tsconfigPath": "./tsconfig.json"
   },
   "dependencies": {
+    "@babel/core": "^7.21.8",
+    "@babel/preset-env": "^7.21.5",
     "@emotion/react": "^11.11.0",
     "@emotion/server": "^11.11.0",
     "@mantine/core": "^6.0.10",
@@ -73,6 +75,7 @@
     "@types/swagger-ui-react": "^4.18.0",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
+    "babel-jest": "^29.5.0",
     "eslint": "^8.36.0",
     "eslint-config-next": "^13.4.1",
     "husky": "^8.0.0",
