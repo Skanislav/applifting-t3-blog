@@ -35,10 +35,21 @@ jobs:
         run: yarn pretty-quick --check
 
   tests:
-    needs: [pr_checks]
+    needs: pr_checks
     name: ✅ Tests
     runs-on: ubuntu-latest
 
     steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v2
+
+      - name: ⚙️ Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: 📦 Install dependencies
+        run: yarn install --frozen-lockfile --silent
+
       - name: 🧹 Run Jest tests
         run: yarn test --ci --listTests
