@@ -39,7 +39,9 @@ export interface ArticlesRepository {
     image: string,
     user_id: string
   ) => Promise<Article>;
-  getRelatedArticles: (articleSlug: Article["slug"]) => Promise<Article[]>;
+  getRelatedArticles: (
+    articleSlug: Pick<Article, "slug">
+  ) => Promise<Article[]>;
   editArticle: (article: Partial<Article>) => Promise<Article>;
 }
 
@@ -128,7 +130,7 @@ class PrismaArticlesRepository implements ArticlesRepository {
     return Promise.reject(new Error("Article not created"));
   }
 
-  async getRelatedArticles(slug: string): Promise<Article[]> {
+  async getRelatedArticles({ slug }: { slug: string }): Promise<Article[]> {
     const articles = await prisma.article.findMany({
       where: {
         slug,

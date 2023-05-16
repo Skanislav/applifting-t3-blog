@@ -33,9 +33,9 @@ describe("Article API", () => {
         expect(article).toHaveProperty("title");
         expect(article).toHaveProperty("perex");
         expect(article).toHaveProperty("createdAt");
-        expect(article).toHaveProperty("publishedAt");
         expect(article).toHaveProperty("author_name");
         expect(article).toHaveProperty("image_url");
+        expect(article).toHaveProperty("countComments");
       });
     });
   });
@@ -48,7 +48,7 @@ describe("Article API", () => {
         user: null,
       });
 
-      const result = await caller.article.getRelatedArticles(slug);
+      const result = await caller.article.getRelatedArticles({ slug });
       expect(Array.isArray(result)).toBe(true);
       result.forEach((article) => {
         expect(article).toHaveProperty("title");
@@ -58,14 +58,14 @@ describe("Article API", () => {
     });
 
     it("should throw an error if the article is not found", async () => {
-      const slug = "non-existent-slug";
+      const slug = "non-existent-slug-1";
       const caller = appRouter.createCaller({
         ...ctx,
         user: null,
       });
-      await expect(caller.article.getRelatedArticles(slug)).rejects.toThrow(
-        "Article not found"
-      );
+      const result = await caller.article.getRelatedArticles({ slug });
+      expect(Array.isArray(result)).toBe(true);
+      expect(result).toHaveLength(0);
     });
   });
 

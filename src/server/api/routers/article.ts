@@ -186,7 +186,7 @@ export const articleRouter = createTRPCRouter({
         summary: "List recent articles ordered by descending date",
       },
     })
-    .input(z.string())
+    .input(z.object({ slug: z.string() }))
     .output(
       z
         .object({
@@ -196,7 +196,7 @@ export const articleRouter = createTRPCRouter({
         })
         .array()
     )
-    .query(async ({ input }): Promise<Article[]> => {
-      return articlesRepository.getRelatedArticles(input);
+    .query(async ({ input: { slug } }): Promise<Article[]> => {
+      return articlesRepository.getRelatedArticles({ slug });
     }),
 });
