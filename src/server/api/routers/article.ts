@@ -6,6 +6,7 @@ import {
 import { articlesRepository } from "~/server/repository/prisma-repository";
 import { z } from "zod";
 import { type Article } from "@prisma/client";
+import { type ArticleDetailEntity, type ArticleListEntity } from "~/lib/models";
 
 export const articleRouter = createTRPCRouter({
   createNewArticle: protectedProcedure
@@ -125,14 +126,14 @@ export const articleRouter = createTRPCRouter({
           title: z.string(),
           perex: z.string(),
           createdAt: z.date(),
-          publishedAt: z.date().nullable(),
           author_name: z.string(),
           image_url: z.string().nullable(),
+          countComments: z.number(),
         })
         .array()
     )
-    .query((): Promise<Article[]> => {
-      return articlesRepository.getArticles();
+    .query(async (): Promise<ArticleListEntity[]> => {
+      return await articlesRepository.getArticles();
     }),
 
   getBySlug: publicProcedure
@@ -156,12 +157,19 @@ export const articleRouter = createTRPCRouter({
         title: z.string(),
         content: z.string(),
         createdAt: z.date(),
-        publishedAt: z.date().nullable(),
         author_name: z.string(),
         image_url: z.string().nullable(),
+        comments: z
+          .object({
+            id: z.string(),
+            content: z.string(),
+            createdAt: z.date(),
+            authorName: z.string(),
+          })
+          .array(),
       })
     )
-    .query(async (ctx): Promise<Article> => {
+    .query(async (ctx): Promise<ArticleDetailEntity> => {
       const {
         input: { slug },
       } = ctx;
@@ -188,8 +196,6 @@ export const articleRouter = createTRPCRouter({
         .array()
     )
     .query(async ({ input }): Promise<Article[]> => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const article = await articlesRepository.getBySlug(input);
-      return articlesRepository.getRelatedArticles(article);
+      return articlesRepository.getRelatedArticles(input);
     }),
 });

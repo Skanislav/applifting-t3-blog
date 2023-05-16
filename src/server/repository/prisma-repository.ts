@@ -1,9 +1,36 @@
-import { type Article } from "@prisma/client";
+import { type Article, Prisma } from "@prisma/client";
 import { prisma } from "~/server/db";
+import { type ArticleDetailEntity, type ArticleListEntity } from "~/lib/models";
+
+const articleListEntityValidator = Prisma.validator<Prisma.ArticleSelect>()({
+  id: true,
+  title: true,
+  slug: true,
+  perex: true,
+  image_url: true,
+  author_name: true,
+  createdAt: true,
+  _count: {
+    select: {
+      comments: true,
+    },
+  },
+});
+
+const articleDetailValidator = Prisma.validator<Prisma.ArticleSelect>()({
+  id: true,
+  title: true,
+  slug: true,
+  content: true,
+  image_url: true,
+  author_name: true,
+  createdAt: true,
+  comments: true,
+});
 
 export interface ArticlesRepository {
-  getArticles: () => Promise<Article[]>;
-  getBySlug: (slug: string) => Promise<Article>;
+  getArticles: () => Promise<ArticleListEntity[]>;
+  getBySlug: (slug: string) => Promise<ArticleDetailEntity>;
   deleteArticle: (slug: string) => Promise<boolean>;
   createArticle: (
     title: string,
@@ -11,8 +38,8 @@ export interface ArticlesRepository {
     image: string,
     user_id: string
   ) => Promise<Article>;
-  getRelatedArticles: (article: Article) => Promise<Article[]>;
-  editArticle: (article: Article) => Promise<Article>;
+  getRelatedArticles: (articleSlug: Article["slug"]) => Promise<Article[]>;
+  editArticle: (article: Partial<Article>) => Promise<Article>;
 }
 
 class PrismaArticlesRepository implements ArticlesRepository {
@@ -27,7 +54,7 @@ class PrismaArticlesRepository implements ArticlesRepository {
       .catch(() => false);
   }
 
-  editArticle(article: Article): Promise<Article> {
+  editArticle(article: Partial<Article>): Promise<Article> {
     const { title, content, image_url, slug } = article;
     return prisma.article.update({
       where: {
@@ -41,22 +68,29 @@ class PrismaArticlesRepository implements ArticlesRepository {
     });
   }
 
-  async getArticles(): Promise<Article[]> {
+  async getArticles(): Promise<ArticleListEntity[]> {
     const articles = await prisma.article.findMany({
+      select: articleListEntityValidator,
       orderBy: {
         createdAt: "desc",
       },
     });
 
     if (articles?.length) {
-      return Promise.resolve(articles);
+      return Promise.resolve(
+        articles.map(({ _count: { comments }, ...article }) => ({
+          ...article,
+          countComments: comments,
+        }))
+      );
     }
 
     return [];
   }
 
-  async getBySlug(slug: string): Promise<Article> {
+  async getBySlug(slug: string): Promise<ArticleDetailEntity> {
     const article = await prisma.article.findUnique({
+      select: articleDetailValidator,
       where: {
         slug,
       },
@@ -93,10 +127,10 @@ class PrismaArticlesRepository implements ArticlesRepository {
     return Promise.reject(new Error("Article not created"));
   }
 
-  async getRelatedArticles(article: Article): Promise<Article[]> {
+  async getRelatedArticles(slug: string): Promise<Article[]> {
     const articles = await prisma.article.findMany({
       where: {
-        author_name: article.author_name,
+        slug,
       },
     });
     if (articles?.length) {
@@ -107,5 +141,4 @@ class PrismaArticlesRepository implements ArticlesRepository {
   }
 }
 
-export const articlesRepository: ArticlesRepository =
-  new PrismaArticlesRepository();
+export const articlesRepository = new PrismaArticlesRepository();

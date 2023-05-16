@@ -1,5 +1,13 @@
 import { api } from "~/utils/api";
-import { Container, Divider, Grid, Group, Space, Stack } from "@mantine/core";
+import {
+  Text,
+  Container,
+  Divider,
+  Grid,
+  Group,
+  Space,
+  Stack,
+} from "@mantine/core";
 import React from "react";
 import { DetailArticle } from "~/lib/components/article/detail-article";
 import {
@@ -11,6 +19,7 @@ import { createContext } from "~/server/context";
 import superjson from "superjson";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { RelatedArticles } from "~/lib/components/related-articles";
+import { ArticleComments } from "~/lib/components/comments/comments-list";
 
 export async function getServerSideProps(
   context: GetServerSidePropsContext<{ slug: string }>
@@ -48,7 +57,15 @@ export default function ArticleDetailPage({
               <div>Error: {article.error.message}</div>
             )}
             {article.status === "success" && article.data && (
-              <DetailArticle article={article.data} />
+              <>
+                <DetailArticle article={article.data} />
+                <Space h={20} />
+                <Text weight={500} size={24}>
+                  Comments {`(${article.data.comments.length || 0})`}
+                </Text>
+                <Space h={40} />
+                <ArticleComments comments={article.data.comments || []} />
+              </>
             )}
           </Grid.Col>
           <Grid.Col span={1}>

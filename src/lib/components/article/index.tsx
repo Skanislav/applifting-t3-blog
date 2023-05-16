@@ -9,13 +9,13 @@ import {
   TypographyStylesProvider,
   UnstyledButton,
 } from "@mantine/core";
-import { type Article } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { formatDate } from "~/lib/format";
+import { type ArticleListEntity } from "~/lib/models";
 
 type ArticlePreviewProps = {
-  article: Omit<Article, "content">;
+  article: ArticleListEntity;
 };
 
 function isHtml(input: string) {
@@ -66,7 +66,7 @@ export const ArticlePreview = ({ article }: ArticlePreviewProps) => {
             </UnstyledButton>
           </Box>
           <Text size={14} weight={400} color={"#6C757D"}>
-            4 comments
+            {article.countComments} comments
           </Text>
         </Group>
       </Stack>
