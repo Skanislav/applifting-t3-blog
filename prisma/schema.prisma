@@ -14,6 +14,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Comment {
+  id         String   @id @default(cuid())
+  content    String
+  authorName String
+  article    Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId  String
+  createdAt  DateTime @default(now())
+}
+
 model Article {
   id          String  @id @default(cuid())
   slug        String  @unique
@@ -25,6 +34,8 @@ model Article {
 
   createdAt   DateTime  @default(now())
   publishedAt DateTime?
+
+  comments Comment[]
 }
 
 // Necessary for Next auth

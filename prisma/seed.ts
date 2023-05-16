@@ -1,5 +1,6 @@
 import { prisma } from "~/server/db";
 import articlesData from "../assets/articles.json";
+import commentsData from "../assets/comments.json";
 
 async function seedAdmin() {
   const id = "test-id";
@@ -22,9 +23,16 @@ async function seedArticles() {
   });
 }
 
+async function seedComments() {
+  await prisma.comment.createMany({
+    data: commentsData,
+  });
+}
+
 async function main() {
   await seedAdmin();
   await seedArticles();
+  await seedComments();
 }
 
 main()

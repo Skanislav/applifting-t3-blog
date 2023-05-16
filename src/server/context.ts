@@ -5,6 +5,7 @@ import { getSession } from "next-auth/react";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { getToken } from "next-auth/jwt";
 import { type GetServerSidePropsContext } from "next";
+import { CommentsPrismaRepository } from "~/server/repository/comments-repository";
 
 type CreateContextOptions = {
   session: Session | null;
@@ -14,6 +15,9 @@ export const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
     prisma: prisma,
+    reps: {
+      comments: new CommentsPrismaRepository(prisma),
+    },
   };
 };
 

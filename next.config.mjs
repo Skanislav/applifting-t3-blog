@@ -10,6 +10,10 @@ const config = {
   // Not supported by theme UI :(
   appDir: false,
 
+  experimental: {
+    forceSwcTransforms: true,
+  },
+
   images: {
     remotePatterns: [
       {
