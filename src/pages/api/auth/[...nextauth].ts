@@ -15,6 +15,7 @@ export default function auth(
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return NextAuth(req, res, {
     ...authOptions,
   });
