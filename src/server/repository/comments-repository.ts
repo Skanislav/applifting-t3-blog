@@ -1,6 +1,7 @@
 import { Prisma, type PrismaClient } from "@prisma/client";
-import { type RouterInputs } from "~/utils/api";
+
 import { type ArticleComment } from "~/lib/models";
+import { type RouterInputs } from "~/utils/api";
 
 interface CommentsRepository {
   createComment(

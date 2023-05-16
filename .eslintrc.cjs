@@ -18,7 +18,7 @@ const config = {
   parserOptions: {
     project: path.join(__dirname, "tsconfig.json"),
   },
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "simple-import-sort"],
   extends: ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
   ignorePatterns: ["./node_modules/*"],
   rules: {
@@ -30,6 +30,8 @@ const config = {
       },
     ],
     "@typescript-eslint/no-unused-vars": [0, { argsIgnorePattern: "^_" }],
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
   },
 };
 

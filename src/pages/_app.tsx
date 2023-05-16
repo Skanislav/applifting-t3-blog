@@ -1,15 +1,15 @@
+import "~/styles/globals.css";
+
+import { MantineProvider } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
 import { type AppType } from "next/app";
+import Head from "next/head";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-
-import { api } from "~/utils/api";
-
-import "~/styles/globals.css";
 import React from "react";
-import Head from "next/head";
-import { MantineProvider } from "@mantine/core";
+
 import Layout from "~/lib/components/layout";
-import { Notifications } from "@mantine/notifications";
+import { api } from "~/utils/api";
 
 const MyApp: AppType<{
   session: Session;

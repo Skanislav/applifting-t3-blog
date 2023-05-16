@@ -1,7 +1,8 @@
-import { type ArticleComment } from "~/lib/models";
+import { Avatar, Grid, Group, Stack, Text } from "@mantine/core";
 import React from "react";
-import { Text, Avatar, Grid, Stack, Group } from "@mantine/core";
+
 import { formatRelativeTime } from "~/lib/format";
+import { type ArticleComment } from "~/lib/models";
 
 type ArticleCommentProps = {
   comment: ArticleComment;

@@ -1,17 +1,18 @@
+import { Button, Container } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import { createServerSideHelpers } from "@trpc/react-query/server";
 import {
   type GetServerSidePropsContext,
   type InferGetServerSidePropsType,
 } from "next";
-import { appRouter } from "~/server/api/root";
-import { createContext } from "~/server/context";
-import superjson from "superjson";
-import { api, type RouterInputs } from "~/utils/api";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { notifications } from "@mantine/notifications";
-import { Button, Container } from "@mantine/core";
+import superjson from "superjson";
+
 import { ArticleForm } from "~/lib/components/dashboard/article-form";
-import { createServerSideHelpers } from "@trpc/react-query/server";
+import { appRouter } from "~/server/api/root";
+import { createContext } from "~/server/context";
+import { api, type RouterInputs } from "~/utils/api";
 
 export async function getServerSideProps(
   context: GetServerSidePropsContext<{ slug: string }>

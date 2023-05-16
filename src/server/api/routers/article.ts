@@ -1,12 +1,13 @@
+import { type Article } from "@prisma/client";
+import { z } from "zod";
+
+import { type ArticleDetailEntity, type ArticleListEntity } from "~/lib/models";
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
 import { articlesRepository } from "~/server/repository/prisma-repository";
-import { z } from "zod";
-import { type Article } from "@prisma/client";
-import { type ArticleDetailEntity, type ArticleListEntity } from "~/lib/models";
 
 export const articleRouter = createTRPCRouter({
   createNewArticle: protectedProcedure

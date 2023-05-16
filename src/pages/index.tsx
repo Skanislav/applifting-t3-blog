@@ -1,13 +1,13 @@
-import { type GetServerSidePropsContext, type NextPage } from "next";
-
-import { api } from "~/utils/api";
-import React from "react";
 import { Center, Container, Space, Stack, Title } from "@mantine/core";
-import { ArticlePreview } from "~/lib/components/article";
 import { createServerSideHelpers } from "@trpc/react-query/server";
-import { appRouter } from "~/server/api/root";
+import { type GetServerSidePropsContext, type NextPage } from "next";
+import React from "react";
 import superjson from "superjson";
+
+import { ArticlePreview } from "~/lib/components/article";
+import { appRouter } from "~/server/api/root";
 import { createContext } from "~/server/context";
+import { api } from "~/utils/api";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const helpers = createServerSideHelpers({

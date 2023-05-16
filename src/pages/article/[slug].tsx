@@ -1,25 +1,26 @@
-import { api } from "~/utils/api";
 import {
-  Text,
   Container,
   Divider,
   Grid,
   Group,
   Space,
   Stack,
+  Text,
 } from "@mantine/core";
-import React from "react";
-import { DetailArticle } from "~/lib/components/article/detail-article";
+import { createServerSideHelpers } from "@trpc/react-query/server";
 import {
   type GetServerSidePropsContext,
   type InferGetServerSidePropsType,
 } from "next";
+import React from "react";
+import superjson from "superjson";
+
+import { DetailArticle } from "~/lib/components/article/detail-article";
+import { ArticleComments } from "~/lib/components/comments/comments-list";
+import { RelatedArticles } from "~/lib/components/related-articles";
 import { appRouter } from "~/server/api/root";
 import { createContext } from "~/server/context";
-import superjson from "superjson";
-import { createServerSideHelpers } from "@trpc/react-query/server";
-import { RelatedArticles } from "~/lib/components/related-articles";
-import { ArticleComments } from "~/lib/components/comments/comments-list";
+import { api } from "~/utils/api";
 
 export async function getServerSideProps(
   context: GetServerSidePropsContext<{ slug: string }>

@@ -1,8 +1,9 @@
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { observable } from "@trpc/server/observable";
-import { z } from "zod";
 import { EventEmitter } from "events";
+import { z } from "zod";
+
 import { type ArticleComment } from "~/lib/models";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 const ee = new EventEmitter();
 

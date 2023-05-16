@@ -1,7 +1,8 @@
-import { type ArticleComment } from "~/lib/models";
-import { ArticleCommentComponent } from "~/lib/components/comments/article-comment";
-import React from "react";
 import { Stack } from "@mantine/core";
+import React from "react";
+
+import { ArticleCommentComponent } from "~/lib/components/comments/article-comment";
+import { type ArticleComment } from "~/lib/models";
 
 type CommentsListProps = {
   comments: Omit<ArticleComment, "">[];

@@ -1,6 +1,7 @@
 import { type Article, Prisma } from "@prisma/client";
-import { prisma } from "~/server/db";
+
 import { type ArticleDetailEntity, type ArticleListEntity } from "~/lib/models";
+import { prisma } from "~/server/db";
 
 const articleListEntityValidator = Prisma.validator<Prisma.ArticleSelect>()({
   id: true,

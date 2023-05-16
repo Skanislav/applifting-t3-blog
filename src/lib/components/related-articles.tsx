@@ -1,8 +1,9 @@
 import { Space, Text, Title } from "@mantine/core";
-import { api } from "~/utils/api";
-import React from "react";
 import { Stack } from "@mantine/core";
 import Link from "next/link";
+import React from "react";
+
+import { api } from "~/utils/api";
 
 type RelatedArticlesProps = {
   articleSlug: string;

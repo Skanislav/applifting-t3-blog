@@ -1,6 +1,7 @@
+import { createOpenApiNextHandler } from "trpc-openapi";
+
 import { env } from "~/env.mjs";
 import { appRouter } from "~/server/api/root";
-import { createOpenApiNextHandler } from "trpc-openapi";
 import { createContext } from "~/server/context";
 
 // export API handler

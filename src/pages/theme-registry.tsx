@@ -1,5 +1,5 @@
-import React from "react";
 import { MantineProvider, type MantineThemeOverride } from "@mantine/core";
+import React from "react";
 
 const theme: MantineThemeOverride = {
   black: "#212529",

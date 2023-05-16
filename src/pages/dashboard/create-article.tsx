@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
 import { Button, Container } from "@mantine/core";
-import { api, type RouterInputs } from "~/utils/api";
 import { notifications } from "@mantine/notifications";
 import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
+
 import { ArticleForm } from "~/lib/components/dashboard/article-form";
+import { api, type RouterInputs } from "~/utils/api";
 
 export default function CreateArticlePage() {
   const router = useRouter();

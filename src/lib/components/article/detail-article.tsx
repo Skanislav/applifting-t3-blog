@@ -1,14 +1,15 @@
-import Image from "next/image";
-import { type RouterOutputs } from "~/utils/api";
 import {
-  Stack,
-  Title,
-  Text,
-  TypographyStylesProvider,
   Divider,
+  Stack,
+  Text,
+  Title,
+  TypographyStylesProvider,
 } from "@mantine/core";
+import Image from "next/image";
 import React from "react";
+
 import { formatDate } from "~/lib/format";
+import { type RouterOutputs } from "~/utils/api";
 
 export const DetailArticle = ({
   article,

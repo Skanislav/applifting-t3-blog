@@ -1,10 +1,11 @@
-import { api } from "~/utils/api";
-import React from "react";
 import { ActionIcon, Container, Group, Table } from "@mantine/core";
 import { IconPencil, IconTrash } from "@tabler/icons-react";
 import { type GetServerSidePropsContext } from "next";
-import { getServerAuthSession } from "~/server/auth";
 import Link from "next/link";
+import React from "react";
+
+import { getServerAuthSession } from "~/server/auth";
+import { api } from "~/utils/api";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getServerAuthSession(context);
