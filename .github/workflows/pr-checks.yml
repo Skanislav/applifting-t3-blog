@@ -64,4 +64,4 @@ jobs:
         run: yarn install --frozen-lockfile --silent
 
       - name: 🧹 Run Jest tests
-        run: yarn test --ci --listTests
+        run: yarn test -c jest.config.cjs --ci --listTests
