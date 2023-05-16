@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Flex,
@@ -11,6 +10,8 @@ import {
 } from "@mantine/core";
 import Image from "next/image";
 import Link from "next/link";
+import React from "react";
+
 import { formatDate } from "~/lib/format";
 import { type ArticleListEntity } from "~/lib/models";
 

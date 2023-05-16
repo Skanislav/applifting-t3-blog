@@ -1,12 +1,13 @@
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { type CreateNextContextOptions } from "@trpc/server/src/adapters/next";
 import {
+  type DefaultSession,
   getServerSession,
   type NextAuthOptions,
-  type DefaultSession,
 } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+
 import { prisma } from "~/server/db";
-import { type CreateNextContextOptions } from "@trpc/server/src/adapters/next";
 
 declare module "next-auth" {
   interface Session extends DefaultSession {

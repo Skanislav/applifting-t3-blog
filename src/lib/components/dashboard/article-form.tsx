@@ -1,12 +1,13 @@
-import { type RouterInputs } from "~/utils/api";
+import { Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import Placeholder from "@tiptap/extension-placeholder";
 import { useEditor } from "@tiptap/react";
 import { StarterKit } from "@tiptap/starter-kit";
-import Placeholder from "@tiptap/extension-placeholder";
 import React, { type PropsWithChildren, useState } from "react";
-import { Stack, TextInput } from "@mantine/core";
+
 import { DashboardArticleFileInput } from "~/lib/components/dashboard/file-input";
 import { RichEditor } from "~/pages/dashboard/rich-editor";
+import { type RouterInputs } from "~/utils/api";
 
 type ArticleFormProps = {
   article?: {

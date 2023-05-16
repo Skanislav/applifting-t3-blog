@@ -1,7 +1,8 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
-import { ZodError } from "zod";
 import { type OpenApiMeta } from "trpc-openapi";
+import { ZodError } from "zod";
+
 import { type createContext } from "~/server/context";
 
 const t = initTRPC

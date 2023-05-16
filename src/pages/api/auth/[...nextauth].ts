@@ -1,7 +1,8 @@
-import { authOptions } from "~/server/auth";
 import type { NextApiRequest, NextApiResponse } from "next";
 import NextAuth from "next-auth";
 import { type NextAuthApiHandler } from "next-auth/src";
+
+import { authOptions } from "~/server/auth";
 
 export default function auth(
   req: NextApiRequest,
@@ -14,7 +15,6 @@ export default function auth(
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return NextAuth(req, res, {
     ...authOptions,
   });

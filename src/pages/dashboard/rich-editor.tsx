@@ -1,6 +1,6 @@
-import React from "react";
 import { RichTextEditor } from "@mantine/tiptap";
 import { type Editor } from "@tiptap/react";
+import React from "react";
 
 type RichEditorProps = {
   editor: Editor | null;
