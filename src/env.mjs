@@ -17,7 +17,7 @@ export const env = createEnv({
       .enum(["development", "test", "production"])
       .default("development"),
     NEXTAUTH_SECRET: optionalForTest(z.string().min(1)),
-    WS_PORT: z.string(),
+    WS_PORT: z.string().default("3001"),
     NEXTAUTH_URL: optionalForTest(
       z.preprocess(
         // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
@@ -35,7 +35,7 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    NEXT_PUBLIC_WS_URL: z.string().min(1),
+    NEXT_PUBLIC_WS_URL: optionalForTest(z.string().min(1)),
   },
 
   /**
