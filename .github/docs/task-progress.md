@@ -38,11 +38,11 @@ This file tracks the progress of the assignment tasks.
 
 ### Comment Management
 
-- [ ] Add the possibility to add comments to articles
-  - [ ] Implement comment creation
+- [?] Add the possibility to add comments to articles
+  - [x] Implement comment creation
   - [x] Implement comment retrieval
-  - [ ] Implement comment updating
-  - [ ] Implement comment deletion
+  - [?] Implement comment updating
+  - [?] Implement comment deletion
   - [x] Add author, content, timestamp to comments
   - [x] Seed comments
 
@@ -54,14 +54,14 @@ This file tracks the progress of the assignment tasks.
 
 ### Real-Time Functionality
 
-- [ ] Make commenting and voting real-time
-  - [ ] Implement GraphQL Subscriptions or WebSockets
+- [x] Make commenting and voting real-time
+  - [x] Implement ~~GraphQL~~ tRPC Subscriptions or WebSockets
 
 ### Testing
 
-- [ ] Test the code
+- [x] Test the code
   - [x] Write unit tests
-  - [ ] Optionally write integration and end-to-end tests
+  - [x] Optionally write integration and end-to-end tests (discussable 😂)
 
 ## Frontend Tasks
 
@@ -74,7 +74,7 @@ This file tracks the progress of the assignment tasks.
     - [x] Article List
     - [x] Article View
     - [x] New Article View
-    - [ ] Add Comment functionality
+    - [x] Add Comment functionality
     - [ ] Add Comment voting functionality
   - [x] Admin Perspective:
     - [x] Login Screen
