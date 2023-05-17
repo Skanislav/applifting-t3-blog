@@ -3,7 +3,7 @@ import { Prisma, type PrismaClient } from "@prisma/client";
 import { type ArticleComment } from "~/lib/models";
 import { type RouterInputs } from "~/utils/api";
 
-interface CommentsRepository {
+export interface CommentsRepository {
   createComment(
     data: RouterInputs["comments"]["createNewComment"]
   ): Promise<ArticleComment>;

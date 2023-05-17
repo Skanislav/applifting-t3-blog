@@ -6,7 +6,14 @@ import { getToken } from "next-auth/jwt";
 import { getSession } from "next-auth/react";
 
 import { prisma } from "~/server/db";
-import { CommentsPrismaRepository } from "~/server/repository/comments-repository";
+import {
+  ArticlesPrismaRepository,
+  type ArticlesRepository,
+} from "~/server/repository/prisma/articles-repository";
+import {
+  CommentsPrismaRepository,
+  type CommentsRepository,
+} from "~/server/repository/prisma/comments-repository";
 
 type CreateContextOptions = {
   session: Session | null;
@@ -18,6 +25,7 @@ export const createInnerTRPCContext = (opts: CreateContextOptions) => {
     prisma: prisma,
     reps: {
       comments: new CommentsPrismaRepository(prisma),
+      articles: new ArticlesPrismaRepository(prisma),
     },
   };
 };
@@ -38,4 +46,11 @@ export const createContext = async (
   };
 };
 
-export type Context = trpc.inferAsyncReturnType<typeof createContext>;
+export type AppContext = trpc.inferAsyncReturnType<typeof createContext> & {
+  reps: {
+    comments: CommentsRepository;
+    articles: ArticlesRepository;
+  };
+};
+
+export type Context = AppContext;

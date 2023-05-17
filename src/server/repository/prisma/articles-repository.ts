@@ -1,7 +1,6 @@
-import { type Article, Prisma } from "@prisma/client";
+import { type Article, Prisma, type PrismaClient } from "@prisma/client";
 
 import { type ArticleDetailEntity, type ArticleListEntity } from "~/lib/models";
-import { prisma } from "~/server/db";
 
 const articleListEntityValidator = Prisma.validator<Prisma.ArticleSelect>()({
   id: true,
@@ -45,9 +44,11 @@ export interface ArticlesRepository {
   editArticle: (article: Partial<Article>) => Promise<Article>;
 }
 
-class PrismaArticlesRepository implements ArticlesRepository {
+export class ArticlesPrismaRepository implements ArticlesRepository {
+  constructor(private prisma: PrismaClient) {}
+
   deleteArticle(slug: string): Promise<boolean> {
-    return prisma.article
+    return this.prisma.article
       .delete({
         where: {
           slug,
@@ -59,7 +60,7 @@ class PrismaArticlesRepository implements ArticlesRepository {
 
   editArticle(article: Partial<Article>): Promise<Article> {
     const { title, content, image_url, slug } = article;
-    return prisma.article.update({
+    return this.prisma.article.update({
       where: {
         slug,
       },
@@ -72,7 +73,7 @@ class PrismaArticlesRepository implements ArticlesRepository {
   }
 
   async getArticles(): Promise<ArticleListEntity[]> {
-    const articles = await prisma.article.findMany({
+    const articles = await this.prisma.article.findMany({
       select: articleListEntityValidator,
       orderBy: {
         createdAt: "desc",
@@ -92,7 +93,7 @@ class PrismaArticlesRepository implements ArticlesRepository {
   }
 
   async getBySlug(slug: string): Promise<ArticleDetailEntity> {
-    const article = await prisma.article.findUnique({
+    const article = await this.prisma.article.findUnique({
       select: articleDetailValidator,
       where: {
         slug,
@@ -112,7 +113,7 @@ class PrismaArticlesRepository implements ArticlesRepository {
     image_url: string,
     author_name: string
   ): Promise<Article> {
-    const created = await prisma.article.create({
+    const created = await this.prisma.article.create({
       data: {
         title,
         content,
@@ -131,7 +132,7 @@ class PrismaArticlesRepository implements ArticlesRepository {
   }
 
   async getRelatedArticles({ slug }: { slug: string }): Promise<Article[]> {
-    const articles = await prisma.article.findMany({
+    const articles = await this.prisma.article.findMany({
       where: {
         slug,
       },
@@ -143,5 +144,3 @@ class PrismaArticlesRepository implements ArticlesRepository {
     return Promise.resolve([]);
   }
 }
-
-export const articlesRepository = new PrismaArticlesRepository();
