@@ -62,7 +62,7 @@ export default function DashboardPage() {
                   <td>{article.title}</td>
                   <td>{article.perex}</td>
                   <td>{article.author_name}</td>
-                  <td></td>
+                  <td>{article.countComments}</td>
                   <td>
                     <Group noWrap>
                       <Link href={`/dashboard/${article.slug}/edit`}>

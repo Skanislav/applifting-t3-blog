@@ -25,7 +25,11 @@ const articleDetailValidator = Prisma.validator<Prisma.ArticleSelect>()({
   image_url: true,
   author_name: true,
   createdAt: true,
-  comments: true,
+  comments: {
+    orderBy: {
+      createdAt: "desc",
+    },
+  },
 });
 
 export interface ArticlesRepository {

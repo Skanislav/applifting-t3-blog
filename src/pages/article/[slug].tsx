@@ -1,12 +1,4 @@
-import {
-  Container,
-  Divider,
-  Grid,
-  Group,
-  Space,
-  Stack,
-  Text,
-} from "@mantine/core";
+import { Container, Divider, Grid, Group, Space, Stack } from "@mantine/core";
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import {
   type GetServerSidePropsContext,
@@ -61,11 +53,10 @@ export default function ArticleDetailPage({
               <>
                 <DetailArticle article={article.data} />
                 <Space h={20} />
-                <Text weight={500} size={24}>
-                  Comments {`(${article.data.comments.length || 0})`}
-                </Text>
-                <Space h={40} />
-                <ArticleComments comments={article.data.comments || []} />
+                <ArticleComments
+                  articleId={article.data.id}
+                  comments={article.data.comments || []}
+                />
               </>
             )}
           </Grid.Col>
