@@ -21,7 +21,7 @@
     "db-seed": "env-cmd prisma db seed",
     "migrate": "prisma migrate dev ",
     "prepare": "husky install",
-    "test": "jest"
+    "test": "env-cmd jest"
   },
   "jest-runner-tsc": {
     "tsconfigPath": "./tsconfig.json"

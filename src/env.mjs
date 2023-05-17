@@ -1,8 +1,8 @@
 import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
-const isProd = process.env.NODE_ENV === "production";
+const isProd = process.env.NODE_ENV === "test";
 
-function optionalForProduction(schema) {
+function optionalForTest(schema) {
   return isProd ? schema.optional() : schema;
 }
 
@@ -12,11 +12,13 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    DATABASE_URL: z.string().url(),
-    NODE_ENV: z.enum(["development", "test", "production"]),
-    NEXTAUTH_SECRET: z.string().min(1),
-    WS_PORT: z.string().min(1),
-    NEXTAUTH_URL: optionalForProduction(
+    DATABASE_URL: optionalForTest(z.string().url()),
+    NODE_ENV: z
+      .enum(["development", "test", "production"])
+      .default("development"),
+    NEXTAUTH_SECRET: optionalForTest(z.string().min(1)),
+    WS_PORT: z.string(),
+    NEXTAUTH_URL: optionalForTest(
       z.preprocess(
         // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
         // Since NextAuth.js automatically uses the VERCEL_URL if present.
