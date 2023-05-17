@@ -7,7 +7,6 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
-import { articlesRepository } from "~/server/repository/prisma-repository";
 
 export const articleRouter = createTRPCRouter({
   createNewArticle: protectedProcedure
@@ -28,18 +27,26 @@ export const articleRouter = createTRPCRouter({
       })
     )
     .output(z.object({}))
-    .mutation(async ({ ctx, input }) => {
-      const { title, content, image } = input;
-      const {
-        user: { name: username },
-      } = ctx;
-
-      /**
-       * already handled by zod
-       */
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return articlesRepository.createArticle(title, content, image, username!);
-    }),
+    .mutation(
+      async ({
+        ctx: {
+          user: { name: username },
+          reps: { articles: articlesRepository },
+        },
+        input: { title, content, image },
+      }) => {
+        /**
+         * already handled by zod
+         */
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return articlesRepository.createArticle(
+          title,
+          content,
+          image,
+          username!
+        );
+      }
+    ),
 
   deleteArticle: protectedProcedure
     .meta({
@@ -57,16 +64,23 @@ export const articleRouter = createTRPCRouter({
       })
     )
     .output(z.void())
-    .mutation(async ({ input }) => {
-      const { slug } = input;
-      const isDeleted = await articlesRepository.deleteArticle(slug);
+    .mutation(
+      async ({
+        input,
+        ctx: {
+          reps: { articles: articlesRepository },
+        },
+      }) => {
+        const { slug } = input;
+        const isDeleted = await articlesRepository.deleteArticle(slug);
 
-      if (!isDeleted) {
-        throw new Error("Article not found");
+        if (!isDeleted) {
+          throw new Error("Article not found");
+        }
+
+        return;
       }
-
-      return;
-    }),
+    ),
 
   editArticle: protectedProcedure
     .meta({
@@ -87,27 +101,33 @@ export const articleRouter = createTRPCRouter({
       })
     )
     .output(z.object({}))
-    .mutation(async ({ input }) => {
-      const { title, content, image, slug } = input;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const article = await articlesRepository.getBySlug(slug);
+    .mutation(
+      async ({
+        input,
+        ctx: {
+          reps: { articles: articlesRepository },
+        },
+      }) => {
+        const { title, content, image, slug } = input;
+        const article = await articlesRepository.getBySlug(slug);
 
-      // We could use something like this in the future
-      // if (article.author_id !== ctx.user.id) {
-      //
-      // }
+        // We could use something like this in the future
+        // if (article.author_id !== ctx.user.id) {
+        //
+        // }
 
-      if (!article) {
-        throw new Error("Article not found");
+        if (!article) {
+          throw new Error("Article not found");
+        }
+
+        return articlesRepository.editArticle({
+          ...article,
+          content,
+          title,
+          image_url: image,
+        });
       }
-
-      return articlesRepository.editArticle({
-        ...article,
-        content,
-        title,
-        image_url: image,
-      });
-    }),
+    ),
 
   getAll: publicProcedure
     .meta({
@@ -133,9 +153,15 @@ export const articleRouter = createTRPCRouter({
         })
         .array()
     )
-    .query(async (): Promise<ArticleListEntity[]> => {
-      return await articlesRepository.getArticles();
-    }),
+    .query(
+      async ({
+        ctx: {
+          reps: { articles: articlesRepository },
+        },
+      }): Promise<ArticleListEntity[]> => {
+        return await articlesRepository.getArticles();
+      }
+    ),
 
   getBySlug: publicProcedure
     .meta({
@@ -170,12 +196,16 @@ export const articleRouter = createTRPCRouter({
           .array(),
       })
     )
-    .query(async (ctx): Promise<ArticleDetailEntity> => {
-      const {
+    .query(
+      async ({
         input: { slug },
-      } = ctx;
-      return articlesRepository.getBySlug(slug);
-    }),
+        ctx: {
+          reps: { articles: articlesRepository },
+        },
+      }): Promise<ArticleDetailEntity> => {
+        return articlesRepository.getBySlug(slug);
+      }
+    ),
 
   getRelatedArticles: publicProcedure
     .meta({
@@ -196,7 +226,14 @@ export const articleRouter = createTRPCRouter({
         })
         .array()
     )
-    .query(async ({ input: { slug } }): Promise<Article[]> => {
-      return articlesRepository.getRelatedArticles({ slug });
-    }),
+    .query(
+      async ({
+        input: { slug },
+        ctx: {
+          reps: { articles: articlesRepository },
+        },
+      }): Promise<Article[]> => {
+        return articlesRepository.getRelatedArticles({ slug });
+      }
+    ),
 });

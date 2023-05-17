@@ -3,10 +3,10 @@ import superjson from "superjson";
 import { type OpenApiMeta } from "trpc-openapi";
 import { ZodError } from "zod";
 
-import { type createContext } from "~/server/context";
+import { type AppContext } from "~/server/context";
 
 const t = initTRPC
-  .context<typeof createContext>()
+  .context<AppContext>()
   .meta<OpenApiMeta>()
   .create({
     transformer: superjson,
