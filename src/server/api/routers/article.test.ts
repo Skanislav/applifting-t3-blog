@@ -230,4 +230,24 @@ describe("deleteArticle", () => {
       },
     });
   });
+
+  it("should throw an error if not authorized", async () => {
+    mockCtx.prisma.article.delete.mockImplementation();
+    const input = {
+      slug: "non-existent-slug",
+    };
+    await expect(caller.article.deleteArticle(input)).rejects.toThrow(
+      "UNAUTHORIZED"
+    );
+  });
+
+  it("should throw an error if not found", async () => {
+    mockCtx.prisma.article.delete.mockRejectedValue(new Error("Not found"));
+    const input = {
+      slug: "non-existent-slug",
+    };
+    await expect(authorizedCaller.article.deleteArticle(input)).rejects.toThrow(
+      "Article not found"
+    );
+  });
 });
