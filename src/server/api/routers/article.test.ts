@@ -126,81 +126,108 @@ describe("Article API", () => {
     });
   });
 
-  describe("editArticle", () => {
-    it("should edit an existing article", async () => {
-      const mockArticle = mockArticles[0] as unknown as Article;
-      mockCtx.prisma.article.findUnique.mockResolvedValueOnce(mockArticle);
-      mockCtx.prisma.article.update.mockResolvedValueOnce(mockArticle);
+  describe("getArticleBySlug", () => {
+    it("should return an article by slug", async () => {
+      const article = mockArticles[0] as unknown as Article;
+      mockCtx.prisma.article.findUnique.mockResolvedValueOnce(article);
 
-      const input = {
-        title: "Updated Article",
-        content: "Updated content",
-        image: "updated-image-url.jpg",
-        slug: "example-slug",
-      };
-
-      const result = await authorizedCaller.article.editArticle({
-        ...input,
-        title: "Updated Article 2",
-      });
-      expect(result).toEqual({});
-      expect(mockCtx.prisma.article.update.bind(this)).toHaveBeenCalledWith({
-        data: {
-          content: input.content,
-          image_url: input.image,
-          title: "Updated Article 2",
-        },
-        where: {
-          slug: mockArticle.slug,
-        },
-      });
-    });
-
-    it("should throw an error if not authorized", async () => {
-      mockCtx.prisma.article.findUnique.mockResolvedValueOnce(null);
-      const input = {
-        title: "Non-existent Article",
-        content: "Updated content",
-        image: "updated-image-url.jpg",
-        slug: "non-existent-slug",
-      };
-      await expect(caller.article.editArticle(input)).rejects.toThrow(
-        "UNAUTHORIZED"
-      );
-    });
-
-    it("should throw an error if the article is not found", async () => {
-      mockCtx.prisma.article.findUnique.mockResolvedValueOnce(null);
-      const input = {
-        title: "Non-existent Article",
-        content: "Updated content",
-        image: "updated-image-url.jpg",
-        slug: "non-existent-slug",
-      };
-      await expect(authorizedCaller.article.editArticle(input)).rejects.toThrow(
-        "Article not found"
-      );
+      const result = await caller.article.getBySlug({ slug: article.slug });
+      expect(result).toHaveProperty("id");
+      expect(result).toHaveProperty("slug");
+      expect(result).toHaveProperty("title");
+      expect(result).toHaveProperty("content");
+      expect(result).toHaveProperty("createdAt");
+      expect(result).toHaveProperty("author_name");
+      expect(result).toHaveProperty("image_url");
+      expect(result).toHaveProperty("comments");
     });
   });
 
-  describe("deleteArticle", () => {
-    it("should delete if article exists", async () => {
-      const article = mockArticles[0] as unknown as Article;
-      mockCtx.prisma.article.findUnique.mockResolvedValueOnce(article);
-      mockCtx.prisma.article.delete.mockResolvedValueOnce(article);
+  it("should throw an error if the article is not found", async () => {
+    mockCtx.prisma.article.findUnique.mockResolvedValueOnce(null);
+    const slug = "non-existent-slug-2";
+    await expect(caller.article.getBySlug({ slug })).rejects.toThrow(
+      "Article not found"
+    );
+  });
+});
 
-      const input = {
-        slug: "example-slug",
-      };
+describe("editArticle", () => {
+  it("should edit an existing article", async () => {
+    const mockArticle = mockArticles[0] as unknown as Article;
+    mockCtx.prisma.article.findUnique.mockResolvedValueOnce(mockArticle);
+    mockCtx.prisma.article.update.mockResolvedValueOnce(mockArticle);
 
-      const result = await authorizedCaller.article.deleteArticle(input);
+    const input = {
+      title: "Updated Article",
+      content: "Updated content",
+      image: "updated-image-url.jpg",
+      slug: "example-slug",
+    };
 
-      expect(result).toBeUndefined();
-      expect(mockCtx.prisma.article.delete.bind(this)).toHaveBeenCalledWith({
-        where: {
-          slug: input.slug,
-        },
-      });
+    const result = await authorizedCaller.article.editArticle({
+      ...input,
+      title: "Updated Article 2",
+    });
+    expect(result).toEqual({});
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    expect(mockCtx.prisma.article.update).toHaveBeenCalledWith({
+      data: {
+        content: input.content,
+        image_url: input.image,
+        title: "Updated Article 2",
+      },
+      where: {
+        slug: mockArticle.slug,
+      },
+    });
+  });
+
+  it("should throw an error if not authorized", async () => {
+    mockCtx.prisma.article.findUnique.mockResolvedValueOnce(null);
+    const input = {
+      title: "Non-existent Article",
+      content: "Updated content",
+      image: "updated-image-url.jpg",
+      slug: "non-existent-slug",
+    };
+    await expect(caller.article.editArticle(input)).rejects.toThrow(
+      "UNAUTHORIZED"
+    );
+  });
+
+  it("should throw an error if the article is not found", async () => {
+    mockCtx.prisma.article.findUnique.mockResolvedValueOnce(null);
+    const input = {
+      title: "Non-existent Article",
+      content: "Updated content",
+      image: "updated-image-url.jpg",
+      slug: "non-existent-slug",
+    };
+    await expect(authorizedCaller.article.editArticle(input)).rejects.toThrow(
+      "Article not found"
+    );
+  });
+});
+
+describe("deleteArticle", () => {
+  it("should delete if article exists", async () => {
+    const article = mockArticles[0] as unknown as Article;
+    mockCtx.prisma.article.findUnique.mockResolvedValueOnce(article);
+    mockCtx.prisma.article.delete.mockResolvedValueOnce(article);
+
+    const input = {
+      slug: "example-slug",
+    };
+
+    const result = await authorizedCaller.article.deleteArticle(input);
+
+    expect(result).toBeUndefined();
+    // eslint-disable-next-line @typescript-eslint/unbound-method
+    expect(mockCtx.prisma.article.delete).toHaveBeenCalledWith({
+      where: {
+        slug: input.slug,
+      },
     });
   });
 });
