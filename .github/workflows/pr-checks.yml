@@ -12,6 +12,12 @@ jobs:
   pr_checks:
     name: ✅ PR Checks
     runs-on: ubuntu-latest
+    env:
+      CI: true
+      DATABASE_URL: ${{ env.DATABASE_URL }}
+      NEXTAUTH_SECRET: ${{ env.NEXTAUTH_SECRET }}
+      WS_PORT: ${{ env.WS_PORT }}
+      NEXT_PUBLIC_WS_URL: ${{ env.NEXT_PUBLIC_WS_URL }}
 
     steps:
       - name: 📥 Checkout code
@@ -44,6 +50,12 @@ jobs:
     needs: pr_checks
     name: ✅ Tests
     runs-on: ubuntu-latest
+    env:
+      CI: true
+      DATABASE_URL: ${{ env.DATABASE_URL }}
+      NEXTAUTH_SECRET: ${{ env.NEXTAUTH_SECRET }}
+      WS_PORT: ${{ env.WS_PORT }}
+      NEXT_PUBLIC_WS_URL: ${{ env.NEXT_PUBLIC_WS_URL }}
 
     steps:
       - name: 📥 Checkout code
