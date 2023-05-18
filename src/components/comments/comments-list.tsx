@@ -1,22 +1,42 @@
 import { Space, Stack, Text } from "@mantine/core";
-import React from "react";
+import { notifications } from "@mantine/notifications";
+import { type CommentRatings } from "@prisma/client";
+import React, { useEffect } from "react";
 
 import { ArticleCommentComponent } from "~/components/comments/article-comment";
 import { CreateComment } from "~/components/comments/create-comment";
-import { type ArticleComment } from "~/lib/models";
+import { type ArticleDetailEntity } from "~/lib/models";
 import { api } from "~/utils/api";
 
 type CommentsListProps = {
-  comments: ArticleComment[];
+  comments: ArticleDetailEntity["comments"];
   articleId: string;
+  userIp: string | string[] | undefined;
 };
 
-export const ArticleComments = ({ comments, articleId }: CommentsListProps) => {
-  const [commentsData, setComments] = React.useState(() => comments);
+export const ArticleComments = ({
+  comments,
+  articleId,
+  userIp,
+}: CommentsListProps) => {
+  const upvoteMutation = api.comments.upVoteComment.useMutation();
+  const [commentsData, setComments] = React.useState<
+    ArticleDetailEntity["comments"]
+  >(() => comments);
+  const [upVoteData, setUpVoteData] = React.useState<
+    Record<CommentRatings["id"], number>
+  >({});
+
   api.comments.onCreate.useSubscription(undefined, {
     onData(post) {
       setComments((comments) => {
-        return [post, ...comments];
+        return [
+          {
+            ...post,
+            countRatings: 0,
+          },
+          ...comments,
+        ];
       });
     },
     onError(err) {
@@ -24,18 +44,91 @@ export const ArticleComments = ({ comments, articleId }: CommentsListProps) => {
     },
   });
 
+  api.comments.onUpVote.useSubscription(undefined, {
+    onData(newUpVote) {
+      const { commentId, rating } = newUpVote;
+
+      if (commentId === undefined || rating === undefined) {
+        return;
+      }
+
+      setUpVoteData((currentData) => {
+        return {
+          ...currentData,
+          [commentId]: rating === "up" ? 1 : -1,
+        };
+      });
+
+      setComments((comments) => {
+        return comments.map((c) => {
+          if (c.id === commentId) {
+            const existingRating = upVoteData[c.id] || 0;
+            return {
+              ...c,
+              countRatings: c.countRatings + existingRating,
+            };
+          }
+
+          return c;
+        });
+      });
+    },
+  });
+
+  const commentsWithRatings = React.useMemo(() => {
+    return commentsData.map((c) => {
+      const existingRating = upVoteData[c.id] || 0;
+      return {
+        ...c,
+        countRatings: c.countRatings + existingRating,
+      };
+    });
+  }, [commentsData, upVoteData]);
+
+  function handleVoteClick(commentId: string, vote: "up" | "down") {
+    const resolveUserIp = Array.isArray(userIp) ? userIp[0] : userIp;
+    upvoteMutation.mutate({
+      commentId: commentId,
+      rate: vote,
+      userIp: resolveUserIp || "unknown",
+    });
+  }
+
+  useEffect(() => {
+    if (upvoteMutation.status === "success") {
+      upvoteMutation.reset();
+      notifications.show({
+        title: "Success",
+        message: "Your vote has been counted",
+        color: "green",
+      });
+    } else if (upvoteMutation.status === "error") {
+      notifications.show({
+        title: "Error",
+        message: "You can only vote once per comment",
+        color: "red",
+      });
+    }
+  }, [upvoteMutation, upvoteMutation.status]);
+
   return (
     <Stack>
       <Text weight={500} size={24}>
-        Comments {`(${commentsData.length || 0})`}
+        Comments {`(${commentsWithRatings.length || 0})`}
       </Text>
 
       <CreateComment articleId={articleId} />
 
       <Space h={30} />
 
-      {commentsData.map((c) => {
-        return <ArticleCommentComponent key={c.id} comment={c} />;
+      {commentsWithRatings.map((c) => {
+        return (
+          <ArticleCommentComponent
+            onVote={handleVoteClick}
+            key={c.id}
+            comment={c}
+          />
+        );
       })}
     </Stack>
   );

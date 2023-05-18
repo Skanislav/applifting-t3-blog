@@ -38,11 +38,11 @@ export const articleRouter = createTRPCRouter({
         /**
          * already handled by zod
          */
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return articlesRepository.createArticle(
           title,
           content,
           image,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           username!
         );
       }
@@ -192,6 +192,7 @@ export const articleRouter = createTRPCRouter({
             content: z.string(),
             createdAt: z.date(),
             authorName: z.string(),
+            countRatings: z.number(),
           })
           .array(),
       })

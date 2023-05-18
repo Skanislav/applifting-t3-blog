@@ -13,10 +13,12 @@ import { RelatedArticles } from "~/components/related-articles";
 import { appRouter } from "~/server/api/root";
 import { createContext } from "~/server/context";
 import { api } from "~/utils/api";
+import { getRequestIpAddress } from "~/utils/get-request-ip-address";
 
 export async function getServerSideProps(
   context: GetServerSidePropsContext<{ slug: string }>
 ) {
+  const userIp = getRequestIpAddress(context.req);
   const helpers = createServerSideHelpers({
     router: appRouter,
     ctx: await createContext(context),
@@ -28,12 +30,14 @@ export async function getServerSideProps(
     props: {
       trpcState: helpers.dehydrate(),
       slug,
+      userIp,
     },
   };
 }
 
 export default function ArticleDetailPage({
   slug,
+  userIp,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   if (!slug) return null;
 
@@ -54,6 +58,7 @@ export default function ArticleDetailPage({
                 <DetailArticle article={article.data} />
                 <Space h={20} />
                 <ArticleComments
+                  userIp={userIp}
                   articleId={article.data.id}
                   comments={article.data.comments || []}
                 />
