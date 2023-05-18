@@ -25,7 +25,27 @@ const articleDetailValidator = Prisma.validator<Prisma.ArticleSelect>()({
   image_url: true,
   author_name: true,
   createdAt: true,
-  comments: true,
+  comments: {
+    select: {
+      id: true,
+      content: true,
+      authorName: true,
+      createdAt: true,
+      CommentRatings: {
+        select: {
+          rating: true,
+        },
+      },
+      _count: {
+        select: {
+          CommentRatings: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  },
 });
 
 export interface ArticlesRepository {
@@ -101,7 +121,15 @@ export class ArticlesPrismaRepository implements ArticlesRepository {
     });
 
     if (article) {
-      return Promise.resolve(article);
+      const { comments, ...restProps } = article;
+      const commentsWithCount = comments.map(({ CommentRatings, ...rest }) => {
+        let sum = 0;
+        Object.values(CommentRatings).forEach(({ rating }) => {
+          rating === "up" ? sum++ : sum--;
+        });
+        return { ...rest, countRatings: sum };
+      });
+      return Promise.resolve({ ...restProps, comments: commentsWithCount });
     }
 
     return Promise.reject(new Error("Article not found"));

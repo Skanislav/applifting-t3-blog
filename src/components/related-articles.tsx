@@ -10,7 +10,9 @@ type RelatedArticlesProps = {
 };
 
 export function RelatedArticles({ articleSlug }: RelatedArticlesProps) {
-  const articles = api.article.getRelatedArticles.useQuery(articleSlug);
+  const articles = api.article.getRelatedArticles.useQuery({
+    slug: articleSlug,
+  });
 
   return (
     <Stack>

@@ -1,0 +1,12 @@
+.alien {
+  transition: fill 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+.alien svg {
+  fill: #ed82bd;
+}
+
+.alien:hover svg {
+  fill: #ea2588;
+}

@@ -6,5 +6,5 @@ export type ArticleListEntity = Omit<Article, "content" | "publishedAt"> & {
 };
 export type ArticleComment = Omit<Comment, "articleId">;
 export type ArticleDetailEntity = Omit<Article, "perex" | "publishedAt"> & {
-  comments: ArticleComment[];
+  comments: Array<ArticleComment & { countRatings: number }>;
 };

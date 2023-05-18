@@ -8,6 +8,10 @@ export function formatRelativeTime(date: Date) {
   const timeDiff = Math.abs(now.getTime() - date.getTime());
   const secondsDiff = Math.floor(timeDiff / 1000);
 
+  if (secondsDiff < 60) {
+    return `few seconds ago`;
+  }
+
   const minutesDiff = Math.floor(secondsDiff / 60);
   if (minutesDiff === 1) {
     return `A minute ago`;

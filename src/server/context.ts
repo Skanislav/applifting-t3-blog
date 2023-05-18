@@ -1,9 +1,12 @@
 import type * as trpc from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import { type NodeHTTPCreateContextFnOptions } from "@trpc/server/src/adapters/node-http";
+import { type IncomingMessage } from "http";
 import { type GetServerSidePropsContext } from "next";
 import { type Session } from "next-auth";
 import { getToken } from "next-auth/jwt";
 import { getSession } from "next-auth/react";
+import type ws from "ws";
 
 import { prisma } from "~/server/db";
 import {
@@ -31,7 +34,10 @@ export const createInnerTRPCContext = (opts: CreateContextOptions) => {
 };
 
 export const createContext = async (
-  opts: GetServerSidePropsContext | CreateNextContextOptions
+  opts:
+    | GetServerSidePropsContext
+    | CreateNextContextOptions
+    | NodeHTTPCreateContextFnOptions<IncomingMessage, ws>
 ) => {
   const session = await getSession({ req: opts.req });
   const token = await getToken(opts);
