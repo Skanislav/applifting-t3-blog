@@ -1,13 +1,14 @@
 import { loggerLink } from "@trpc/client";
+import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
 import { createTRPCNext } from "@trpc/next";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import superjson from "superjson";
 
 import { type AppRouter } from "~/server/api/root";
-import { getEndingLink } from "~/utils/index";
+import { getBaseUrl } from "~/utils/index";
 
 export const api = createTRPCNext<AppRouter>({
-  config({ ctx }) {
+  config({}) {
     // noinspection SuspiciousTypeOfGuard
     return {
       transformer: superjson,
@@ -18,7 +19,9 @@ export const api = createTRPCNext<AppRouter>({
             process.env.NODE_ENV === "development" ||
             (opts.direction === "down" && opts.result instanceof Error),
         }),
-        getEndingLink(ctx),
+        httpBatchLink({
+          url: `${getBaseUrl()}/api/trpc`,
+        }),
       ],
     };
   },
