@@ -1,5 +1,5 @@
+import { createWSClient, wsLink } from "@trpc/client";
 import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
-import { createWSClient, wsLink } from "@trpc/client/links/wsLink";
 import { type NextPageContext } from "next";
 
 import { env } from "~/env.mjs";

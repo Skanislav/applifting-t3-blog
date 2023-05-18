@@ -1,12 +1,12 @@
 import { Space, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { type CommentRatings } from "@prisma/client";
-import React, { useEffect } from "react";
+import React from "react";
 
 import { ArticleCommentComponent } from "~/components/comments/article-comment";
 import { CreateComment } from "~/components/comments/create-comment";
 import { type ArticleDetailEntity } from "~/lib/models";
-import { api } from "~/utils/api";
+import { wsApi } from "~/utils/ws";
 
 type CommentsListProps = {
   comments: ArticleDetailEntity["comments"];
@@ -19,7 +19,22 @@ export const ArticleComments = ({
   articleId,
   userIp,
 }: CommentsListProps) => {
-  const upvoteMutation = api.comments.upVoteComment.useMutation();
+  const upvoteMutation = wsApi.comments.upVoteComment.useMutation({
+    onError() {
+      notifications.show({
+        title: "Error",
+        message: "You can only vote once per comment",
+        color: "red",
+      });
+    },
+    onSuccess() {
+      notifications.show({
+        title: "Success",
+        message: "Your vote was counted",
+        color: "green",
+      });
+    },
+  });
   const [commentsData, setComments] = React.useState<
     ArticleDetailEntity["comments"]
   >(() => comments);
@@ -27,7 +42,7 @@ export const ArticleComments = ({
     Record<CommentRatings["id"], number>
   >({});
 
-  api.comments.onCreate.useSubscription(undefined, {
+  wsApi.comments.onCreate.useSubscription(undefined, {
     onData(post) {
       setComments((comments) => {
         return [
@@ -44,7 +59,7 @@ export const ArticleComments = ({
     },
   });
 
-  api.comments.onUpVote.useSubscription(undefined, {
+  wsApi.comments.onUpVote.useSubscription(undefined, {
     onData(newUpVote) {
       const { commentId, rating } = newUpVote;
 
@@ -93,23 +108,6 @@ export const ArticleComments = ({
       userIp: resolveUserIp || "unknown",
     });
   }
-
-  useEffect(() => {
-    if (upvoteMutation.status === "success") {
-      upvoteMutation.reset();
-      notifications.show({
-        title: "Success",
-        message: "Your vote has been counted",
-        color: "green",
-      });
-    } else if (upvoteMutation.status === "error") {
-      notifications.show({
-        title: "Error",
-        message: "You can only vote once per comment",
-        color: "red",
-      });
-    }
-  }, [upvoteMutation, upvoteMutation.status]);
 
   return (
     <Stack>
