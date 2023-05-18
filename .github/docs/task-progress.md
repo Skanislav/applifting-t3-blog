@@ -6,7 +6,7 @@ This file tracks the progress of the assignment tasks.
 
 ### API Design and Documentation
 
-- [ ] Design the API and document it
+- [x] Design the API and document it
   - [x] Create REST API
     - [x] Define API endpoints
     - [x] Document API using Swagger
@@ -48,9 +48,9 @@ This file tracks the progress of the assignment tasks.
 
 ### Comment Voting
 
-- [ ] Add the possibility to vote on comments
-  - [ ] Implement comment voting (+/-)
-  - [ ] Identify votes by IP address
+- [x] Add the possibility to vote on comments
+  - [x] Implement comment voting (+/-)
+  - [x] Identify votes by IP address
 
 ### Real-Time Functionality
 
@@ -75,7 +75,7 @@ This file tracks the progress of the assignment tasks.
     - [x] Article View
     - [x] New Article View
     - [x] Add Comment functionality
-    - [ ] Add Comment voting functionality
+    - [x] Add Comment voting functionality
   - [x] Admin Perspective:
     - [x] Login Screen
     - [x] My Article List
