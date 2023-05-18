@@ -67,5 +67,8 @@ jobs:
       - name: 📦 Install dependencies
         run: yarn install --frozen-lockfile --silent
 
+      - name: ✨ Copy Environment Variables
+        run: cp .env.example .env
+
       - name: 🧹 Run Jest tests
-        run: yarn test -c jest.config.cjs --ci --listTests
+        run: yarn test  -c jest.config.cjs --ci --listTests
