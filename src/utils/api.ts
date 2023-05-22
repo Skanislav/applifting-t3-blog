@@ -22,9 +22,7 @@ export const api = createTRPCNext<AppRouter>({
           condition(op) {
             return op.context.wsApi === true || op.type === "subscription";
           },
-          // when condition is true, use normal request
           true: getEndingLink(ctx),
-          // when condition is false, use batching
           false: httpBatchLink({
             url: `${getBaseUrl()}/api/trpc`,
           }),
