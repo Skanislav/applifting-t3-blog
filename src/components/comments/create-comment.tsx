@@ -27,7 +27,13 @@ export function CreateComment({ articleId }: CreateCommentProps) {
     },
   });
 
-  const createComment = api.comments.createNewComment.useMutation();
+  const createComment = api.comments.createNewComment.useMutation({
+    trpc: {
+      context: {
+        wsApi: true,
+      },
+    },
+  });
 
   function handleSubmit(data: RouterInputs["comments"]["createNewComment"]) {
     if (!data.authorName) {

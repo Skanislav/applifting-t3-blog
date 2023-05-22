@@ -6,7 +6,7 @@ import React from "react";
 import { ArticleCommentComponent } from "~/components/comments/article-comment";
 import { CreateComment } from "~/components/comments/create-comment";
 import { type ArticleDetailEntity } from "~/lib/models";
-import { wsApi } from "~/utils/ws";
+import { api } from "~/utils/api";
 
 type CommentsListProps = {
   comments: ArticleDetailEntity["comments"];
@@ -19,7 +19,12 @@ export const ArticleComments = ({
   articleId,
   userIp,
 }: CommentsListProps) => {
-  const upvoteMutation = wsApi.comments.upVoteComment.useMutation({
+  const upvoteMutation = api.comments.upVoteComment.useMutation({
+    trpc: {
+      context: {
+        wsApi: true,
+      },
+    },
     onError() {
       notifications.show({
         title: "Error",
@@ -42,7 +47,7 @@ export const ArticleComments = ({
     Record<CommentRatings["id"], number>
   >({});
 
-  wsApi.comments.onCreate.useSubscription(undefined, {
+  api.comments.onCreate.useSubscription(undefined, {
     onData(post) {
       setComments((comments) => {
         return [
@@ -59,7 +64,7 @@ export const ArticleComments = ({
     },
   });
 
-  wsApi.comments.onUpVote.useSubscription(undefined, {
+  api.comments.onUpVote.useSubscription(undefined, {
     onData(newUpVote) {
       const { commentId, rating } = newUpVote;
 

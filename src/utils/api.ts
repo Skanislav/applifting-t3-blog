@@ -1,14 +1,13 @@
-import { loggerLink } from "@trpc/client";
-import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
+import { httpBatchLink, loggerLink, splitLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import superjson from "superjson";
 
 import { type AppRouter } from "~/server/api/root";
-import { getBaseUrl } from "~/utils/index";
+import { getBaseUrl, getEndingLink } from "~/utils/index";
 
 export const api = createTRPCNext<AppRouter>({
-  config({}) {
+  config({ ctx }) {
     // noinspection SuspiciousTypeOfGuard
     return {
       transformer: superjson,
@@ -19,8 +18,16 @@ export const api = createTRPCNext<AppRouter>({
             process.env.NODE_ENV === "development" ||
             (opts.direction === "down" && opts.result instanceof Error),
         }),
-        httpBatchLink({
-          url: `${getBaseUrl()}/api/trpc`,
+        splitLink({
+          condition(op) {
+            return op.context.wsApi === true || op.type === "subscription";
+          },
+          // when condition is true, use normal request
+          true: getEndingLink(ctx),
+          // when condition is false, use batching
+          false: httpBatchLink({
+            url: `${getBaseUrl()}/api/trpc`,
+          }),
         }),
       ],
     };
